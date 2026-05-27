@@ -1,5 +1,9 @@
 // ── LAUFBAHN SHARED JS v5 ──
 
+// ── SCROLL RESTORATION: always start at top ──
+if (history.scrollRestoration) history.scrollRestoration = 'manual';
+window.scrollTo(0, 0);
+
 // ── BINDER HOLES ──
 function buildBinder() {
   document.querySelectorAll('.binder-hole').forEach(e => e.remove());
@@ -46,11 +50,26 @@ if (backTop) {
 }
 
 // ── REVEAL ON SCROLL ──
+function checkReveal(el) {
+  const rect = el.getBoundingClientRect();
+  return rect.top < window.innerHeight * 0.98 && rect.bottom > 0;
+}
+
+function runReveal() {
+  document.querySelectorAll('.reveal:not(.seen)').forEach(el => {
+    if (checkReveal(el)) el.classList.add('seen');
+  });
+}
+
 const io = new IntersectionObserver((entries) => {
   entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('seen'); io.unobserve(e.target); }
+    if (e.isIntersecting) {
+      e.target.classList.add('seen');
+      io.unobserve(e.target);
+    }
   });
-}, { threshold: 0.08 });
+}, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+
 document.querySelectorAll('.reveal').forEach(el => io.observe(el));
 
 // ── MARGIN NOTES ──
@@ -62,10 +81,12 @@ document.querySelectorAll('.margin-note').forEach(el => ioMargin.observe(el));
 // ── BLUEPRINT PAGE LOAD REVEAL ──
 const revealOverlay = document.getElementById('blueprint-reveal');
 if (revealOverlay) {
+  // Trigger reveals immediately once overlay is gone
   setTimeout(() => {
     revealOverlay.classList.add('done');
+    runReveal(); // show everything currently in viewport
     setTimeout(() => revealOverlay.remove(), 600);
-  }, 1600);
+  }, 1500);
 }
 
 // ── HERO UNDERLINE ──
@@ -80,7 +101,8 @@ if (heroBp) {
 // ── SKILL BARS ──
 function animateSkills() {
   document.querySelectorAll('.skill-fill').forEach(fill => {
-    const valEl = document.getElementById(fill.id + '-val');
+    const id = fill.id;
+    const valEl = document.getElementById(id + '-val');
     const target = parseInt(fill.dataset.target || 0);
     fill.style.width = target + '%';
     let cur = 0;
@@ -95,7 +117,7 @@ const profileMock = document.getElementById('profile-mock');
 if (profileMock) {
   const ioProfile = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) { animateSkills(); ioProfile.unobserve(e.target); } });
-  }, { threshold: 0.4 });
+  }, { threshold: 0.3 });
   ioProfile.observe(profileMock);
 }
 
@@ -109,8 +131,8 @@ window.toggleTweaks = function() {
 window.setAccent = function(light, dark, el) {
   document.querySelectorAll('.accent-dot').forEach(d => d.classList.remove('selected'));
   el.classList.add('selected');
-  const dark_mode = window.matchMedia('(prefers-color-scheme: dark)').matches;
-  document.documentElement.style.setProperty('--accent', dark_mode ? dark : light);
+  const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  document.documentElement.style.setProperty('--accent', isDark ? dark : light);
 };
 window.setDensity = function(mode, btn) {
   document.querySelectorAll('#density-seg button').forEach(b => b.classList.remove('active'));
@@ -149,9 +171,15 @@ buildBinder();
 window.addEventListener('resize', buildBinder);
 new ResizeObserver(buildBinder).observe(document.body);
 
-// trigger visible reveals on load
-setTimeout(() => {
-  document.querySelectorAll('.reveal').forEach(el => {
-    if (el.getBoundingClientRect().top < window.innerHeight * 0.95) el.classList.add('seen');
-  });
-}, 80);
+// Run reveal check immediately + on scroll
+window.addEventListener('scroll', runReveal, { passive: true });
+
+// Run after fonts and layout settle
+window.addEventListener('load', () => {
+  runReveal();
+  buildBinder();
+});
+
+// Fallback: run after short delay
+setTimeout(runReveal, 200);
+setTimeout(runReveal, 800);

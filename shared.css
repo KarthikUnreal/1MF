@@ -226,7 +226,7 @@ section.full-w { max-width: none; }
 /* ── REVEAL ── */
 .reveal {
   opacity: 0;
-  clip-path: inset(0 0 100% 0);
+  clip-path: inset(0 0 96% 0);
   transition: opacity 0.7s ease, clip-path 0.7s cubic-bezier(0.16,1,0.3,1);
 }
 .reveal.seen { opacity: 1; clip-path: inset(0 0 0% 0); }
@@ -471,4 +471,26 @@ kbd {
   .profile-layout { grid-template-columns: 1fr; }
   #kb-hints { display: none; }
   #tweaks { display: none; }
+}
+
+/* ── CRITICAL FIXES ── */
+/* Ensure page bg is always visible immediately */
+html, body {
+  background-color: #f5f2eb;
+}
+@media (prefers-color-scheme: dark) {
+  html, body { background-color: #0d1a2e; }
+}
+
+/* Hero must always show its background */
+#hero, #stage-hero {
+  background-color: var(--bg) !important;
+}
+
+/* Reveal: don't use clip-path on hero title/body — too aggressive above fold */
+#hero-title, #hero-title ~ *,
+.hero-h1, .stage-h1 {
+  opacity: 1 !important;
+  clip-path: none !important;
+  animation: none;
 }
