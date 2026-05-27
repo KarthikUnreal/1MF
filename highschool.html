@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Laufbahn · Class 9–12 · Specialist Stage</title>
+<link rel="stylesheet" href="shared.css"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<style>
+#stage-hero{min-height:70vh;display:flex;flex-direction:column;justify-content:center;padding:80px 56px 56px 96px;position:relative;z-index:1;background:repeating-linear-gradient(90deg,transparent,transparent 47px,rgba(232,160,32,0.05) 47px,rgba(232,160,32,0.05) 48px),repeating-linear-gradient(transparent,transparent 47px,rgba(232,160,32,0.05) 47px,rgba(232,160,32,0.05) 48px);}
+h1.stage-h1{font-family:var(--serif);font-size:clamp(3rem,7vw,5.5rem);line-height:1.0;letter-spacing:-1.5px;color:var(--ink);margin-bottom:20px;overflow:visible;padding-bottom:8px;}
+h1.stage-h1 em{color:#e8a020;font-style:italic;}
+.stage-tagline{font-family:var(--sans);font-size:1.05rem;line-height:1.75;color:var(--ink-soft);max-width:560px;margin-bottom:28px;}
+.stage-breadcrumb{display:flex;gap:0;margin-bottom:32px;border:1px solid var(--rule);width:fit-content;border-radius:2px;overflow:hidden;}
+.bc-item{font-family:var(--mono);font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-right:1px solid var(--rule);color:var(--ink-dim);text-decoration:none;transition:all 0.15s;}
+.bc-item:last-child{border-right:none;}
+.bc-item.active{background:#e8a020;color:white;}
+.bc-item:hover:not(.active){color:var(--ink);}
+.sf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:40px;}
+.sf-card{border:1px solid var(--card-border);background:var(--card);padding:24px;position:relative;overflow:hidden;transition:border-color 0.2s;}
+.sf-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:#e8a020;transform:scaleY(0);transform-origin:top;transition:transform 0.3s;}
+.sf-card:hover::before{transform:scaleY(1);}
+.sf-card:hover{border-color:#e8a020;}
+.sf-num{font-family:var(--mono);font-size:0.58rem;color:var(--ink-dim);letter-spacing:2px;margin-bottom:12px;}
+.sf-title{font-family:var(--serif);font-size:1.1rem;color:var(--ink);margin-bottom:6px;}
+.sf-body{font-family:var(--sans);font-size:0.85rem;color:var(--ink-soft);line-height:1.65;}
+.sc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:28px;}
+.sc-card{border:1px solid var(--card-border);background:var(--card);padding:20px;position:relative;transition:transform 0.2s,box-shadow 0.2s;}
+.sc-card:hover{transform:translateY(-2px);box-shadow:3px 5px 0 var(--shadow);}
+.sc-stripe{position:absolute;bottom:0;left:0;right:0;height:4px;background:#e8a020;}
+.sc-level{font-family:var(--mono);font-size:0.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--ink-dim);margin-bottom:8px;}
+.sc-title{font-family:var(--serif);font-size:1rem;color:var(--ink);margin-bottom:4px;}
+.sc-desc{font-family:var(--sans);font-size:0.8rem;color:var(--ink-soft);line-height:1.55;}
+#cta-stage{background:#e8a020;text-align:center;padding:64px 56px;position:relative;z-index:1;max-width:none;}
+#cta-stage::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.06) 1px,transparent 1px);background-size:48px 48px;}
+#cta-stage .sec-title{color:white;position:relative;z-index:1;}
+#cta-stage .sec-sub{color:rgba(255,255,255,0.75);margin:0 auto 28px;position:relative;z-index:1;text-align:center;max-width:440px;}
+.cta-btns{display:flex;gap:12px;justify-content:center;position:relative;z-index:1;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<div id="blueprint-reveal"><div class="reveal-grid"><div class="reveal-grid-lines"></div><div class="reveal-text" style="color:#e8a020;">9–12</div></div><div class="reveal-label">Laufbahn · Specialist Stage</div></div>
+<div id="progress-bar"></div><div id="chrome-spine"></div>
+<div id="stage-tracker"><div class="tracker-inner">
+  <a class="tracker-step" href="grade38.html"><span class="tracker-dot"></span>Grade 3–8</a>
+  <a class="tracker-step active" href="highschool.html"><span class="tracker-dot"></span>Class 9–12</a>
+  <a class="tracker-step" href="university.html"><span class="tracker-dot"></span>University</a>
+  <a class="tracker-step" href="professional.html"><span class="tracker-dot"></span>Professional</a>
+</div></div>
+<div id="kb-hints"><kbd>F</kbd> ? &nbsp;·&nbsp; <kbd>Esc</kbd> close</div>
+<nav id="main-nav">
+  <div class="nav-logo"><span class="logo-lauf">Lauf</span><span class="logo-bahn" style="color:#e8a020;">bahn</span><sub>v5</sub></div>
+  <ul class="nav-links">
+    <li><a href="index.html">home</a></li>
+    <li><a href="#stage-hero" class="active">Class 9–12</a></li>
+    <li><a href="#stage-features">features</a></li>
+    <li><a href="#stage-courses">courses</a></li>
+    <li><a href="index.html#contact">contact</a></li>
+  </ul>
+</nav>
+<section id="stage-hero">
+  <div class="margin-note" style="top:120px;color:#e8a020;">LFB-912</div>
+  <div class="dwg-num">DWG NO. <span style="color:#e8a020;">LFB-912</span><br/>STAGE <span style="color:#e8a020;">02</span></div>
+  <div class="stage-breadcrumb">
+    <a class="bc-item" href="index.html">Home</a>
+    <a class="bc-item" href="grade38.html">G3–8</a>
+    <a class="bc-item active" href="highschool.html">9–12</a>
+    <a class="bc-item" href="university.html">Uni</a>
+    <a class="bc-item" href="professional.html">Pro</a>
+  </div>
+  <div style="font-family:var(--mono);font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:#e8a020;margin-bottom:16px;display:flex;align-items:center;gap:10px;">Class 9–12 · Stage 02<span style="width:60px;height:1px;background:#e8a020;opacity:0.5;display:inline-block;"></span></div>
+  <h1 class="stage-h1 reveal">Specialise<br/>& <em>Launch.</em></h1>
+  <p class="stage-tagline reveal" style="transition-delay:0.12s;">Class 9 to 12 is where direction gets set. Laufbahn helps you train for specific fields, build a CV that stands out, get a Letter of Recommendation that's actually strong, and match you to the right colleges and countries for what you want to do with your life.</p>
+  <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;" class="reveal" style="transition-delay:0.2s;">
+    <a href="#stage-features" class="btn-primary" style="background:#e8a020;">Explore Features</a>
+    <a href="#stage-courses" class="btn-outline" style="color:#e8a020;border-color:#e8a020;">View Courses</a>
+    <a href="index.html#pricing" class="btn-outline" style="color:var(--ink-dim);border-color:var(--rule);">Pricing →</a>
+  </div>
+</section>
+<hr class="separator"/>
+<section id="stage-features">
+  <div class="margin-note" style="top:60px;color:#e8a020;">§01 · FEATURES</div>
+  <div class="reveal"><div class="drawing-label" style="color:#e8a020;">§01 · What You Get</div><h2 class="sec-title">Built for<br/><em style="color:#e8a020;">this stage.</em></h2><p class="sec-sub">Tools for the most decisive years of your education.</p></div>
+  <div class="sf-grid reveal" style="transition-delay:0.1s;">
+    <div class="sf-card"><div class="sf-num">F-01</div><div class="sf-title">Field-Specific Training</div><div class="sf-body">Deep-dive into your chosen area — science, commerce, humanities, tech. Structured learning that goes beyond your textbook.</div></div>
+    <div class="sf-card"><div class="sf-num">F-02</div><div class="sf-title">CV Builder (Student)</div><div class="sf-body">Build a proper CV for college applications — structured, honest, and tailored to what admissions offices actually want to see.</div></div>
+    <div class="sf-card"><div class="sf-num">F-03</div><div class="sf-title">LOR Suite</div><div class="sf-body">Guided templates and educator tools to produce Letters of Recommendation that are specific, strong, and actually read.</div></div>
+    <div class="sf-card"><div class="sf-num">F-04</div><div class="sf-title">College & Country Matcher</div><div class="sf-body">Data-driven matching to universities worldwide — by field, budget, location preference, and long-term career outcome.</div></div>
+    <div class="sf-card"><div class="sf-num">F-05</div><div class="sf-title">Application Tracker</div><div class="sf-body">Manage every application, deadline, essay, and interview in one place. Nothing falls through the cracks.</div></div>
+    <div class="sf-card"><div class="sf-num">F-06</div><div class="sf-title">Essay Workshop</div><div class="sf-body">Structure, draft, and refine your college application essays with guided prompts and real feedback frameworks.</div></div>
+  </div>
+</section>
+<hr class="separator"/>
+<section id="stage-courses">
+  <div class="margin-note" style="top:60px;color:#e8a020;">§02 · COURSES</div>
+  <div class="reveal"><div class="drawing-label" style="color:#e8a020;">§02 · Courses</div><h2 class="sec-title">Courses for<br/><em style="color:#e8a020;">this stage.</em></h2></div>
+  <div class="sc-grid reveal" style="transition-delay:0.1s;">
+    <div class="sc-card"><div class="sc-stripe"></div><div class="sc-level">Class 9–10</div><div class="sc-title">Career Pathfinding</div><div class="sc-desc">Explore 40+ career fields with real-world insight from practitioners.</div></div>
+    <div class="sc-card"><div class="sc-stripe"></div><div class="sc-level">Class 11–12</div><div class="sc-title">College Application Mastery</div><div class="sc-desc">Essays, interviews, shortlists — every step of global admissions, made clear.</div></div>
+    <div class="sc-card"><div class="sc-stripe"></div><div class="sc-level">Class 9–12</div><div class="sc-title">Advanced Mathematics</div><div class="sc-desc">Calculus, probability, and the mathematical tools of modern science.</div></div>
+    <div class="sc-card"><div class="sc-stripe"></div><div class="sc-level">Class 9–12</div><div class="sc-title">Economics & Markets</div><div class="sc-desc">How money, trade, policy, and systems actually work.</div></div>
+    <div class="sc-card"><div class="sc-stripe"></div><div class="sc-level">Class 11–12</div><div class="sc-title">Research Methods</div><div class="sc-desc">How to ask good questions, gather evidence, and write findings that hold up.</div></div>
+    <div class="sc-card"><div class="sc-stripe"></div><div class="sc-level">Class 9–12</div><div class="sc-title">Public Speaking</div><div class="sc-desc">Communicate with clarity and conviction in any room.</div></div>
+  </div>
+</section>
+<section id="cta-stage" class="full-w">
+  <h2 class="sec-title">Ready to specialise?</h2>
+  <p class="sec-sub">Join thousands of Class 9–12 students on the Laufbahn track.</p>
+  <div class="cta-btns"><a href="index.html#pricing" class="btn-primary" style="background:white;color:#e8a020;">See Pricing</a><a href="index.html" class="btn-outline" style="color:rgba(255,255,255,0.85);border-color:rgba(255,255,255,0.5);">← Back to Home</a></div>
+</section>
+<footer><div class="footer-logo">Lauf<em>bahn</em> · Class 9–12</div><div class="footer-links"><a href="grade38.html">Grade 3–8</a><a href="highschool.html">Class 9–12</a><a href="university.html">University</a><a href="professional.html">Professional</a></div><div style="font-size:0.6rem;">© 2026 LAUFBAHN · <span class="auto-date"></span></div></footer>
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ top</button>
+<div id="egg-modal" onclick="closeEgg()"><div class="egg-box" onclick="event.stopPropagation()"><div class="egg-tape"></div><div class="egg-label">MARGIN NOTE</div><div class="egg-quote">"The blueprint was always there. We just gave it paper."</div><div class="egg-body">You found it. Good eyes.</div></div></div>
+<script src="shared.js"></script>
+</body></html>

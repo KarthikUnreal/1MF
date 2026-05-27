@@ -1,0 +1,12 @@
+{
+  "name": "Laufbahn",
+  "short_name": "Laufbahn",
+  "description": "Track for a Life — Grade 3 to Career",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#f5f2eb",
+  "theme_color": "#c0392b",
+  "icons": [
+    { "src": "favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}

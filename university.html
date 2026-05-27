@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Laufbahn · University · Transition Stage</title>
+<link rel="stylesheet" href="shared.css"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+<style>
+#stage-hero{min-height:70vh;display:flex;flex-direction:column;justify-content:center;padding:80px 56px 56px 96px;position:relative;z-index:1;background:repeating-linear-gradient(45deg,transparent,transparent 10px,rgba(27,45,107,0.03) 10px,rgba(27,45,107,0.03) 11px);}
+h1.stage-h1{font-family:var(--serif);font-size:clamp(3rem,7vw,5.5rem);line-height:1.0;letter-spacing:-1.5px;color:var(--ink);margin-bottom:20px;overflow:visible;padding-bottom:8px;}
+h1.stage-h1 em{color:var(--accent2);font-style:italic;}
+.stage-tagline{font-family:var(--sans);font-size:1.05rem;line-height:1.75;color:var(--ink-soft);max-width:560px;margin-bottom:28px;}
+.stage-breadcrumb{display:flex;gap:0;margin-bottom:32px;border:1px solid var(--rule);width:fit-content;border-radius:2px;overflow:hidden;}
+.bc-item{font-family:var(--mono);font-size:0.6rem;letter-spacing:1.5px;text-transform:uppercase;padding:5px 14px;border-right:1px solid var(--rule);color:var(--ink-dim);text-decoration:none;transition:all 0.15s;}
+.bc-item:last-child{border-right:none;}.bc-item.active{background:var(--accent2);color:white;}.bc-item:hover:not(.active){color:var(--ink);}
+.sf-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px;margin-top:40px;}
+.sf-card{border:1px solid var(--card-border);background:var(--card);padding:24px;position:relative;overflow:hidden;transition:border-color 0.2s;}
+.sf-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent2);transform:scaleY(0);transform-origin:top;transition:transform 0.3s;}
+.sf-card:hover::before{transform:scaleY(1);}.sf-card:hover{border-color:var(--accent2);}
+.sf-num{font-family:var(--mono);font-size:0.58rem;color:var(--ink-dim);letter-spacing:2px;margin-bottom:12px;}
+.sf-title{font-family:var(--serif);font-size:1.1rem;color:var(--ink);margin-bottom:6px;}
+.sf-body{font-family:var(--sans);font-size:0.85rem;color:var(--ink-soft);line-height:1.65;}
+.sc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:28px;}
+.sc-card{border:1px solid var(--card-border);background:var(--card);padding:20px;position:relative;transition:transform 0.2s,box-shadow 0.2s;}
+.sc-card:hover{transform:translateY(-2px);box-shadow:3px 5px 0 var(--shadow);}
+.sc-stripe{position:absolute;bottom:0;left:0;right:0;height:4px;background:var(--accent2);}
+.sc-level{font-family:var(--mono);font-size:0.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--ink-dim);margin-bottom:8px;}
+.sc-title{font-family:var(--serif);font-size:1rem;color:var(--ink);margin-bottom:4px;}
+.sc-desc{font-family:var(--sans);font-size:0.8rem;color:var(--ink-soft);line-height:1.55;}
+#cta-stage{background:var(--accent2);text-align:center;padding:64px 56px;position:relative;z-index:1;max-width:none;}
+#cta-stage::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.06) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.06) 1px,transparent 1px);background-size:48px 48px;}
+#cta-stage .sec-title{color:white;position:relative;z-index:1;}
+#cta-stage .sec-sub{color:rgba(255,255,255,0.65);margin:0 auto 28px;position:relative;z-index:1;text-align:center;max-width:440px;}
+.cta-btns{display:flex;gap:12px;justify-content:center;position:relative;z-index:1;flex-wrap:wrap;}
+</style>
+</head>
+<body>
+<div id="blueprint-reveal"><div class="reveal-grid"><div class="reveal-grid-lines"></div><div class="reveal-text" style="color:var(--accent2);">UNI</div></div><div class="reveal-label">Laufbahn · Transition Stage</div></div>
+<div id="progress-bar"></div><div id="chrome-spine"></div>
+<div id="stage-tracker"><div class="tracker-inner">
+  <a class="tracker-step" href="grade38.html"><span class="tracker-dot"></span>Grade 3–8</a>
+  <a class="tracker-step" href="highschool.html"><span class="tracker-dot"></span>Class 9–12</a>
+  <a class="tracker-step active" href="university.html"><span class="tracker-dot"></span>University</a>
+  <a class="tracker-step" href="professional.html"><span class="tracker-dot"></span>Professional</a>
+</div></div>
+<div id="kb-hints"><kbd>F</kbd> ? &nbsp;·&nbsp; <kbd>Esc</kbd> close</div>
+<nav id="main-nav">
+  <div class="nav-logo"><span class="logo-lauf">Lauf</span><span class="logo-bahn">bahn</span><sub>v5</sub></div>
+  <ul class="nav-links"><li><a href="index.html">home</a></li><li><a href="#stage-hero" class="active">University</a></li><li><a href="#stage-features">features</a></li><li><a href="#stage-courses">courses</a></li><li><a href="index.html#contact">contact</a></li></ul>
+</nav>
+<section id="stage-hero">
+  <div class="margin-note" style="top:120px;">LFB-UNI</div>
+  <div class="dwg-num">DWG NO. <span>LFB-UNI</span><br/>STAGE <span>03</span></div>
+  <div class="stage-breadcrumb"><a class="bc-item" href="index.html">Home</a><a class="bc-item" href="grade38.html">G3–8</a><a class="bc-item" href="highschool.html">9–12</a><a class="bc-item active" href="university.html">Uni</a><a class="bc-item" href="professional.html">Pro</a></div>
+  <div style="font-family:var(--mono);font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent2);margin-bottom:16px;">University · Stage 03</div>
+  <h1 class="stage-h1 reveal">Transition<br/>to the <em>world.</em></h1>
+  <p class="stage-tagline reveal" style="transition-delay:0.12s;">University gives you knowledge. Laufbahn gives you readiness. We bridge the gap between campus and career — with workplace etiquette, resume building, internship finding, and the unwritten rules of professional life that nobody teaches in lectures.</p>
+  <div style="display:flex;gap:12px;margin-top:8px;flex-wrap:wrap;" class="reveal">
+    <a href="#stage-features" class="btn-primary">Explore Features</a>
+    <a href="#stage-courses" class="btn-outline" style="color:var(--accent2);border-color:var(--accent2);">View Courses</a>
+    <a href="index.html#pricing" class="btn-outline" style="color:var(--ink-dim);border-color:var(--rule);">Pricing →</a>
+  </div>
+</section>
+<hr class="separator"/>
+<section id="stage-features">
+  <div class="margin-note" style="top:60px;">§01 · FEATURES</div>
+  <div class="reveal"><div class="drawing-label">§01 · What You Get</div><h2 class="sec-title">Built for<br/><em>this stage.</em></h2><p class="sec-sub">The tools to go from student to professional — without the usual stumble.</p></div>
+  <div class="sf-grid reveal" style="transition-delay:0.1s;">
+    <div class="sf-card"><div class="sf-num">F-01</div><div class="sf-title">Professional Resume Builder</div><div class="sf-body">Not a student CV — a professional resume. Structured for job applications, internship portals, and graduate recruitment.</div></div>
+    <div class="sf-card"><div class="sf-num">F-02</div><div class="sf-title">Internship Finder</div><div class="sf-body">Curated internship listings matched to your field and university year. With application tracking built in.</div></div>
+    <div class="sf-card"><div class="sf-num">F-03</div><div class="sf-title">Work Etiquette Library</div><div class="sf-body">How to email a manager, run a meeting, handle feedback, and navigate office dynamics. The things nobody teaches.</div></div>
+    <div class="sf-card"><div class="sf-num">F-04</div><div class="sf-title">Industry Mentor Access</div><div class="sf-body">Connect with professionals in your target field for real conversations — not generic advice.</div></div>
+    <div class="sf-card"><div class="sf-num">F-05</div><div class="sf-title">First Job Tracker</div><div class="sf-body">Manage every application, interview, and follow-up. Know where you stand at every stage.</div></div>
+    <div class="sf-card"><div class="sf-num">F-06</div><div class="sf-title">LaufProfile (Draft)</div><div class="sf-body">Start building your professional identity now — before you have a job. Graduate employers will see it.</div></div>
+  </div>
+</section>
+<hr class="separator"/>
+<section id="stage-courses">
+  <div class="margin-note" style="top:60px;">§02 · COURSES</div>
+  <div class="reveal"><div class="drawing-label">§02 · Courses</div><h2 class="sec-title">Courses for<br/><em>this stage.</em></h2></div>
+  <div class="sc-grid reveal" style="transition-delay:0.1s;">
+    <div class="sc-card"><div class="sc-stripe"></div><div class="sc-level">University</div><div class="sc-title">Professional Communication</div><div class="sc-desc">Emails, decks, negotiations — the language of work.</div></div>
+    <div class="sc-card"><div class="sc-stripe"></div><div class="sc-level">University</div><div class="sc-title">First Job Playbook</div><div class="sc-desc">Find it, land it, navigate it. The unwritten rules of starting out.</div></div>
+    <div class="sc-card"><div class="sc-stripe"></div><div class="sc-level">University</div><div class="sc-title">Design Thinking</div><div class="sc-desc">Human-centred problem solving for any field or industry.</div></div>
+    <div class="sc-card"><div class="sc-stripe"></div><div class="sc-level">University</div><div class="sc-title">Financial Literacy</div><div class="sc-desc">Salary, tax, savings, investments — money basics for the real world.</div></div>
+    <div class="sc-card"><div class="sc-stripe"></div><div class="sc-level">University</div><div class="sc-title">Networking Without Cringing</div><div class="sc-desc">How to build real professional relationships without feeling fake.</div></div>
+    <div class="sc-card"><div class="sc-stripe"></div><div class="sc-level">University</div><div class="sc-title">Portfolio Building</div><div class="sc-desc">Turn your university work into something employers actually want to see.</div></div>
+  </div>
+</section>
+<section id="cta-stage" class="full-w">
+  <h2 class="sec-title">Ready to transition?</h2>
+  <p class="sec-sub">Join university students already bridging the gap with Laufbahn.</p>
+  <div class="cta-btns"><a href="index.html#pricing" class="btn-primary" style="background:white;color:var(--accent2);">See Pricing</a><a href="index.html" class="btn-outline" style="color:rgba(255,255,255,0.85);border-color:rgba(255,255,255,0.5);">← Back to Home</a></div>
+</section>
+<footer><div class="footer-logo">Lauf<em>bahn</em> · University</div><div class="footer-links"><a href="grade38.html">Grade 3–8</a><a href="highschool.html">Class 9–12</a><a href="university.html">University</a><a href="professional.html">Professional</a></div><div style="font-size:0.6rem;">© 2026 LAUFBAHN · <span class="auto-date"></span></div></footer>
+<button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ top</button>
+<div id="egg-modal" onclick="closeEgg()"><div class="egg-box" onclick="event.stopPropagation()"><div class="egg-tape"></div><div class="egg-label">MARGIN NOTE</div><div class="egg-quote">"The blueprint was always there. We just gave it paper."</div><div class="egg-body">You found it.</div></div></div>
+<script src="shared.js"></script>
+</body></html>

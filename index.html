@@ -1,1244 +1,390 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Laufbahn · Track for a Life</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@300;400;500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
-
+<link rel="stylesheet" href="shared.css"/>
+<link rel="manifest" href="manifest.json"/>
+<meta name="theme-color" content="#c0392b"/>
+<link rel="icon" type="image/svg+xml" href="favicon.svg"/>
 <style>
-/* ── RESET ── */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
-a { color: inherit; text-decoration: none; }
-button { font-family: inherit; cursor: pointer; }
-
-/* ── THEME VARS ── */
-:root {
-  --bg: #f5f2eb;
-  --grid: rgba(27,45,107,0.10);
-  --ink: #0d1b3e;
-  --ink-soft: #2d3d6b;
-  --ink-dim: #7080a0;
-  --accent: #c0392b;
-  --accent2: #1b2d6b;
-  --gold: #e8a020;
-  --card: #ffffff;
-  --card-border: rgba(27,45,107,0.18);
-  --rule: rgba(27,45,107,0.15);
-  --hole: #ede9e0;
-  --margin-line: rgba(192,57,43,0.35);
-  --serif: 'Instrument Serif', Georgia, serif;
-  --mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
-  --sans: 'Instrument Sans', system-ui, sans-serif;
-  --shadow: rgba(13,27,62,0.12);
-}
-.theme-night {
-  --bg: #0d1a2e;
-  --grid: rgba(100,140,220,0.09);
-  --ink: #dde8ff;
-  --ink-soft: #a0b8e0;
-  --ink-dim: #4a6080;
-  --accent: #f4a294;
-  --accent2: #7aaae8;
-  --gold: #f0c060;
-  --card: rgba(255,255,255,0.04);
-  --card-border: rgba(100,140,220,0.2);
-  --rule: rgba(100,140,220,0.15);
-  --hole: #0a1220;
-  --margin-line: rgba(244,162,148,0.35);
-  --shadow: rgba(0,0,0,0.4);
-}
-
-/* ── BODY / PAGE ── */
-body {
-  font-family: var(--mono);
-  background: var(--bg);
-  color: var(--ink);
-  min-height: 100vh;
-  position: relative;
-  overflow-x: hidden;
-  transition: background 0.4s ease, color 0.4s ease;
-}
-body::before {
-  content: '';
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background-image:
-    linear-gradient(var(--grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
-  background-size: 48px 48px;
-  transition: background-image 0.4s;
-}
-
-/* ── PAGE CHROME (binder spine) ── */
-#chrome-spine {
-  position: fixed; left: 0; top: 0; bottom: 0; width: 56px; z-index: 40;
-  pointer-events: none;
-  border-right: 2px solid var(--margin-line);
-  transition: border-color 0.4s;
-}
-.binder-hole {
-  position: fixed; left: 18px; width: 20px; height: 20px;
-  border-radius: 50%;
-  background: var(--hole);
-  border: 1.5px solid var(--rule);
-  z-index: 41; pointer-events: none;
-  transition: all 0.4s;
-  box-shadow: inset 0 1px 3px var(--shadow);
-}
-
-/* ── PROGRESS BAR ── */
-#progress-bar {
-  position: fixed; top: 0; left: 0; height: 3px; z-index: 200;
-  background: var(--accent);
-  width: 0%;
-  transition: width 0.1s linear;
-}
-
-/* ── NAV ── */
-nav {
-  position: sticky; top: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 12px 48px 12px 76px;
-  background: transparent;
-  border-bottom: 1px solid transparent;
-  transition: background 0.25s, border-color 0.25s, backdrop-filter 0.25s;
-}
-nav.scrolled {
-  background: rgba(245,242,235,0.88);
-  backdrop-filter: blur(12px);
-  border-bottom-color: var(--rule);
-}
-.theme-night nav.scrolled {
-  background: rgba(13,26,46,0.88);
-}
-.nav-logo {
-  font-family: var(--serif);
-  font-size: 1.2rem;
-  color: var(--ink);
-  display: flex; align-items: baseline; gap: 6px;
-}
-.nav-logo em { color: var(--accent); font-style: italic; }
-.nav-logo sub { font-family: var(--mono); font-size: 0.6rem; color: var(--ink-dim); margin-left: 2px; }
-.nav-links {
-  display: flex; gap: 20px; list-style: none;
-  font-size: 0.68rem; letter-spacing: 1.5px; text-transform: uppercase;
-}
-.nav-links a {
-  color: var(--ink-dim);
-  transition: color 0.15s;
-}
-.nav-links a:hover { color: var(--accent); }
-.nav-right { display: flex; align-items: center; gap: 12px; }
-.btn-theme {
-  background: none;
-  border: 1px solid var(--rule);
-  border-radius: 3px;
-  padding: 4px 10px;
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  letter-spacing: 1px;
-  color: var(--ink-dim);
-  transition: all 0.2s;
-}
-.btn-theme:hover { border-color: var(--accent); color: var(--accent); }
-
-/* ── SECTIONS ── */
-section {
-  position: relative; z-index: 1;
-  padding: 72px 56px 72px 96px;
-  max-width: 1200px;
-}
-section.full-w { max-width: none; }
-
-/* ── SECTION HEADING ── */
-.drawing-label {
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--accent);
-  margin-bottom: 6px;
-  display: flex; align-items: center; gap: 10px;
-}
-.drawing-label::after {
-  content: '';
-  flex: 1; max-width: 80px;
-  height: 1px;
-  background: var(--accent);
-  opacity: 0.4;
-}
-.sec-title {
-  font-family: var(--serif);
-  font-size: clamp(2.2rem, 4.5vw, 3.4rem);
-  line-height: 1.1;
-  color: var(--ink);
-  letter-spacing: -0.5px;
-  margin-bottom: 0.75rem;
-}
-.sec-title em { font-style: italic; color: var(--accent); }
-.sec-sub {
-  font-family: var(--sans);
-  font-size: 0.95rem;
-  color: var(--ink-soft);
-  line-height: 1.8;
-  max-width: 520px;
-  font-weight: 400;
-}
-
-/* ── MARGIN ANNOTATION ── */
-.margin-note {
-  position: absolute;
-  left: 10px;
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  color: var(--accent);
-  opacity: 0;
-  transform: translateX(-8px);
-  transition: opacity 1.2s ease, transform 1.2s ease;
-  writing-mode: vertical-rl;
-  text-orientation: mixed;
-  letter-spacing: 2px;
-  pointer-events: none;
-  line-height: 1;
-}
-.margin-note.visible { opacity: 0.7; transform: translateX(0); }
-
-/* ── REVEAL ── */
-.reveal {
-  opacity: 0;
-  clip-path: inset(0 0 100% 0);
-  transition: opacity 0.7s ease, clip-path 0.7s cubic-bezier(0.16,1,0.3,1);
-}
-.reveal.seen {
-  opacity: 1;
-  clip-path: inset(0 0 0% 0);
-}
-
-/* ── DRAWING NUMBER (top-right corner annotations) ── */
-.dwg-num {
-  position: absolute;
-  right: 20px; top: 20px;
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  color: var(--ink-dim);
-  letter-spacing: 1px;
-  text-align: right;
-  line-height: 1.6;
-  border: 1px solid var(--rule);
-  padding: 6px 10px;
-  z-index: 2;
-}
-.dwg-num span { color: var(--accent2); }
-
-/* ────────────────────────────────────────────
-   HERO
-──────────────────────────────────────────── */
-#hero {
-  min-height: 100vh;
-  display: flex; flex-direction: column; justify-content: center;
-  padding: 80px 56px 56px 96px;
-  position: relative; z-index: 1;
-}
-.hero-meta {
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--ink-dim);
-  margin-bottom: 20px;
-  display: flex; gap: 20px; flex-wrap: wrap;
-}
-.hero-meta span { color: var(--accent2); }
-h1.hero-h1 {
-  font-family: var(--serif);
-  font-size: clamp(3.5rem, 9vw, 7.5rem);
-  line-height: 0.95;
-  letter-spacing: -2px;
-  color: var(--ink);
-  margin-bottom: 28px;
-  max-width: 900px;
-}
-h1.hero-h1 em { color: var(--accent); font-style: italic; }
-h1.hero-h1 .blueprint-word {
-  position: relative;
-  display: inline-block;
-}
-h1.hero-h1 .blueprint-word::after {
-  content: '';
-  position: absolute; left: 0; right: 0; bottom: -4px;
-  height: 3px;
-  background: var(--accent);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 0.6s cubic-bezier(0.16,1,0.3,1) 0.3s;
-}
-h1.hero-h1 .blueprint-word.seen::after { transform: scaleX(1); }
-
-.hero-body {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr;
-  gap: 56px;
-  margin-top: 8px;
-  max-width: 900px;
-}
-.hero-tagline {
-  font-family: var(--sans);
-  font-size: 1.1rem;
-  line-height: 1.75;
-  color: var(--ink-soft);
-  font-weight: 400;
-}
-.identity-card {
-  border: 1.5px solid var(--card-border);
-  padding: 20px;
-  background: var(--card);
-  transform: rotate(1.2deg);
-  box-shadow: 4px 4px 0 var(--shadow);
-  position: relative;
-  transition: background 0.4s, border-color 0.4s;
-}
-.identity-card::before {
-  content: 'IDENTITY — LFB-001';
-  position: absolute; top: -10px; left: 16px;
-  font-family: var(--mono); font-size: 0.58rem;
-  letter-spacing: 1.5px; color: var(--ink-dim);
-  background: var(--bg); padding: 0 6px;
-  transition: background 0.4s;
-}
-.identity-card table {
-  border-collapse: collapse; width: 100%;
-  font-family: var(--mono); font-size: 0.72rem;
-  line-height: 2;
-}
-.identity-card td:first-child { color: var(--ink-dim); padding-right: 12px; white-space: nowrap; }
-.identity-card td:last-child { color: var(--ink); }
-.identity-card .val-accent { color: var(--accent); }
-
-.hero-stats {
-  display: flex; gap: 40px;
-  margin-top: 40px;
-  padding-top: 24px;
-  border-top: 1px solid var(--rule);
-  max-width: 900px;
-}
-.stat-num {
-  font-family: var(--serif);
-  font-size: 2.4rem;
-  color: var(--accent2);
-  display: block;
-  line-height: 1;
-}
-.stat-label {
-  font-family: var(--mono);
-  font-size: 0.6rem;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--ink-dim);
-  margin-top: 4px;
-}
-
-/* ── STAGE SELECTOR ── */
-.stage-nav {
-  display: flex; gap: 0;
-  margin-bottom: 40px;
-  border: 1px solid var(--rule);
-  width: fit-content;
-  overflow: hidden;
-  border-radius: 3px;
-}
-.stage-btn {
-  background: transparent;
-  border: none;
-  border-right: 1px solid var(--rule);
-  padding: 8px 20px;
-  font-family: var(--mono);
-  font-size: 0.65rem;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  color: var(--ink-dim);
-  transition: all 0.2s;
-}
-.stage-btn:last-child { border-right: none; }
-.stage-btn.active, .stage-btn:hover {
-  background: var(--accent2);
-  color: white;
-}
-.theme-night .stage-btn.active { background: var(--accent2); }
-
-/* ── JOURNEY ITEMS ── */
-.journey-list { display: flex; flex-direction: column; gap: 0; position: relative; }
-.journey-connector {
-  position: absolute; left: 27px; top: 56px; bottom: 56px;
-  width: 2px;
-  background: linear-gradient(to bottom, var(--accent), var(--gold), var(--accent2));
-  opacity: 0.3;
-}
-.journey-item {
-  display: flex; gap: 28px;
-  padding: 32px 0;
-  border-bottom: 1px solid var(--rule);
-  position: relative;
-  opacity: 1;
-  transition: opacity 0.3s, max-height 0.4s;
-}
-.journey-item.hidden { display: none; }
-.journey-dot {
-  width: 56px; height: 56px; border-radius: 50%;
-  flex-shrink: 0;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--mono); font-size: 0.7rem; font-weight: 600;
-  letter-spacing: 1px;
-  position: relative; z-index: 2;
-  border: 2px solid;
-  transition: all 0.3s;
-}
-.dot-k8   { border-color: var(--accent);  color: var(--accent);  background: rgba(192,57,43,0.07); }
-.dot-912  { border-color: var(--gold);    color: var(--gold);    background: rgba(232,160,32,0.07); }
-.dot-uni  { border-color: var(--accent2); color: var(--accent2); background: rgba(27,45,107,0.07); }
-.dot-pro  { border-color: var(--ink-soft);color: var(--ink-soft);background: rgba(45,61,107,0.07); }
-.theme-night .dot-k8  { background: rgba(244,162,148,0.1); }
-.theme-night .dot-912 { background: rgba(240,192,96,0.1); }
-.theme-night .dot-uni { background: rgba(122,170,232,0.1); }
-.journey-stage-tag {
-  font-family: var(--mono); font-size: 0.58rem; letter-spacing: 2px;
-  text-transform: uppercase; color: var(--ink-dim);
-  margin-bottom: 4px;
-}
-.journey-title {
-  font-family: var(--serif);
-  font-size: 1.6rem;
-  color: var(--ink);
-  margin-bottom: 6px;
-  line-height: 1.2;
-}
-.journey-desc {
-  font-family: var(--sans);
-  font-size: 0.9rem;
-  color: var(--ink-soft);
-  line-height: 1.75;
-  max-width: 560px;
-}
-.journey-chips {
-  display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px;
-}
-.chip {
-  font-family: var(--mono); font-size: 0.62rem; letter-spacing: 0.5px;
-  padding: 3px 10px; border-radius: 2px;
-  border: 1px solid;
-  transition: background 0.4s;
-}
-.chip-red   { border-color: rgba(192,57,43,0.35);  color: var(--accent);  background: rgba(192,57,43,0.06); }
-.chip-gold  { border-color: rgba(232,160,32,0.35); color: var(--gold);   background: rgba(232,160,32,0.06); }
-.chip-blue  { border-color: rgba(27,45,107,0.25);  color: var(--accent2); background: rgba(27,45,107,0.06); }
-.chip-gray  { border-color: var(--rule);            color: var(--ink-dim); background: transparent; }
-.theme-night .chip-blue { border-color: rgba(122,170,232,0.3); }
-
-/* ── FEATURES ── */
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1px;
-  border: 1px solid var(--rule);
-  background: var(--rule);
-  margin-top: 40px;
-}
-.feature-card {
-  background: var(--card);
-  padding: 28px;
-  transition: background 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-.feature-card::before {
-  content: '';
-  position: absolute; left: 0; top: 0; bottom: 0;
-  width: 3px;
-  background: var(--accent);
-  transform: scaleY(0);
-  transform-origin: top;
-  transition: transform 0.3s cubic-bezier(0.16,1,0.3,1);
-}
-.feature-card:hover::before { transform: scaleY(1); }
-.feature-card:hover { background: rgba(192,57,43,0.03); }
-.feature-num {
-  font-family: var(--mono); font-size: 0.58rem;
-  color: var(--ink-dim); letter-spacing: 2px;
-  margin-bottom: 16px;
-  display: flex; align-items: center; gap: 8px;
-}
-.feature-num::before {
-  content: '';
-  width: 20px; height: 1px;
-  background: var(--rule);
-}
-.feature-title {
-  font-family: var(--serif);
-  font-size: 1.15rem;
-  color: var(--ink);
-  margin-bottom: 8px;
-}
-.feature-body {
-  font-family: var(--sans);
-  font-size: 0.85rem;
-  color: var(--ink-soft);
-  line-height: 1.7;
-  font-weight: 400;
-}
-
-/* ── COURSES ── */
-.courses-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 12px;
-  margin-top: 36px;
-}
-.course-card {
-  border: 1px solid var(--card-border);
-  background: var(--card);
-  padding: 20px;
-  cursor: pointer;
-  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
-  position: relative;
-  perspective: 600px;
-}
-.course-card:hover {
-  transform: translateY(-3px) rotate(-0.3deg);
-  box-shadow: 4px 6px 0 var(--shadow);
-  border-color: var(--accent);
-}
-.course-level {
-  font-family: var(--mono); font-size: 0.58rem;
-  letter-spacing: 2px; text-transform: uppercase;
-  color: var(--ink-dim); margin-bottom: 10px;
-}
-.course-title {
-  font-family: var(--serif);
-  font-size: 1.05rem;
-  color: var(--ink);
-  margin-bottom: 6px;
-  line-height: 1.3;
-}
-.course-desc {
-  font-family: var(--sans);
-  font-size: 0.8rem;
-  color: var(--ink-soft);
-  line-height: 1.6;
-  font-weight: 400;
-}
-.course-stripe {
-  position: absolute; bottom: 0; left: 0; right: 0;
-  height: 4px;
-}
-
-/* ── QUOTES ── */
-.quotes-toolbar {
-  display: flex; gap: 8px; align-items: center;
-  margin-bottom: 28px; flex-wrap: wrap;
-}
-.q-filter-btn {
-  background: transparent;
-  border: 1px solid var(--rule);
-  padding: 4px 12px;
-  font-family: var(--mono); font-size: 0.62rem;
-  letter-spacing: 1px; text-transform: uppercase;
-  color: var(--ink-dim);
-  border-radius: 2px;
-  transition: all 0.2s;
-}
-.q-filter-btn.active, .q-filter-btn:hover {
-  border-color: var(--accent); color: var(--accent);
-  background: rgba(192,57,43,0.06);
-}
-.q-shuffle {
-  margin-left: auto;
-  background: var(--accent2);
-  border: none;
-  padding: 5px 14px;
-  font-family: var(--mono); font-size: 0.62rem;
-  letter-spacing: 1px; text-transform: uppercase;
-  color: white; border-radius: 2px;
-  transition: opacity 0.2s;
-}
-.q-shuffle:hover { opacity: 0.85; }
-.quotes-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-}
-.q-card {
-  padding: 24px;
-  border: 1px solid var(--rule);
-  background: var(--card);
-  position: relative;
-  transition: transform 0.25s, border-color 0.25s;
-}
-.q-card:hover { transform: rotate(-0.5deg); border-color: var(--accent); }
-.q-open-quote {
-  position: absolute; top: 8px; left: 14px;
-  font-family: var(--serif); font-size: 4rem;
-  color: var(--accent); opacity: 0.12; line-height: 1;
-  pointer-events: none;
-}
-.q-text {
-  font-family: var(--serif);
-  font-size: 1.1rem;
-  line-height: 1.5;
-  color: var(--ink);
-  font-style: italic;
-  padding-top: 12px;
-  position: relative; z-index: 1;
-}
-.q-attrib {
-  margin-top: 12px;
-  font-family: var(--mono); font-size: 0.65rem;
-  color: var(--ink-dim); letter-spacing: 0.5px;
-}
-.q-copy-btn {
-  position: absolute; bottom: 10px; right: 10px;
-  background: none; border: none;
-  font-family: var(--mono); font-size: 0.6rem;
-  color: var(--ink-dim); opacity: 0;
-  transition: opacity 0.2s;
-  letter-spacing: 0.5px;
-}
-.q-card:hover .q-copy-btn { opacity: 1; }
-.q-copy-btn:hover { color: var(--accent); }
-
-/* ── NEXUS PROFILE ── */
-.profile-layout {
-  display: grid;
-  grid-template-columns: 1fr 1.1fr;
-  gap: 56px;
-  align-items: center;
-  margin-top: 40px;
-}
-.profile-mock {
-  border: 1.5px solid var(--card-border);
-  background: var(--card);
-  overflow: hidden;
-  box-shadow: 6px 8px 0 var(--shadow);
-  transition: background 0.4s, border-color 0.4s;
-}
-.profile-header {
-  background: var(--accent2);
-  padding: 24px;
-  display: flex; gap: 16px; align-items: center;
-  position: relative;
-}
-.profile-header::after {
-  content: 'NEXUSPROFILE™';
-  position: absolute; right: 16px; top: 10px;
-  font-family: var(--mono); font-size: 0.52rem;
-  letter-spacing: 2px; color: rgba(255,255,255,0.4);
-}
-.profile-avatar {
-  width: 52px; height: 52px; border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  border: 2px solid rgba(255,255,255,0.3);
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--serif); font-size: 1.2rem; color: white;
-  flex-shrink: 0;
-}
-.profile-name { font-family: var(--serif); font-size: 1.1rem; color: white; }
-.profile-role { font-family: var(--mono); font-size: 0.65rem; color: rgba(255,255,255,0.65); margin-top: 2px; }
-.profile-body { padding: 20px; }
-.profile-row {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid var(--rule);
-  font-family: var(--mono); font-size: 0.72rem;
-}
-.profile-row:last-child { border-bottom: none; }
-.profile-row-k { color: var(--ink-dim); }
-.profile-row-v {
-  color: var(--accent2); font-weight: 500;
-  background: rgba(27,45,107,0.07);
-  padding: 2px 8px; border-radius: 2px;
-}
-.theme-night .profile-row-v { background: rgba(122,170,232,0.1); }
-.skill-section { padding: 16px 20px 20px; border-top: 1px solid var(--rule); }
-.skill-label-row {
-  display: flex; justify-content: space-between;
-  font-family: var(--mono); font-size: 0.65rem;
-  color: var(--ink-dim); margin-bottom: 5px;
-}
-.skill-track {
-  background: rgba(27,45,107,0.08);
-  height: 6px; border-radius: 1px; overflow: hidden; margin-bottom: 10px;
-}
-.theme-night .skill-track { background: rgba(122,170,232,0.12); }
-.skill-fill {
-  height: 100%; border-radius: 1px;
-  background: linear-gradient(90deg, var(--accent2), var(--accent));
-  width: 0%;
-  transition: width 1.2s cubic-bezier(0.16,1,0.3,1);
-}
-
-/* ── CTA ── */
-#cta {
-  background: var(--accent2);
-  text-align: center;
-  padding: 80px 56px;
-  position: relative; z-index: 1; max-width: none;
-}
-#cta::before {
-  content: '';
-  position: absolute; inset: 0;
-  background-image:
-    linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px);
-  background-size: 48px 48px;
-}
-.theme-night #cta { background: rgba(27,45,107,0.6); }
-#cta .sec-title { color: white; position: relative; z-index: 1; }
-#cta .sec-sub { color: rgba(255,255,255,0.65); margin: 0 auto 32px; position: relative; z-index: 1; text-align: left; max-width: 480px; }
-#cta .drawing-label { color: rgba(255,255,255,0.5); position: relative; z-index: 1; justify-content: center; }
-#cta .drawing-label::after { background: rgba(255,255,255,0.3); }
-.cta-btns { display: flex; gap: 12px; justify-content: center; position: relative; z-index: 1; flex-wrap: wrap; }
-.btn-primary {
-  background: white;
-  color: var(--accent2);
-  border: none;
-  padding: 12px 28px;
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  border-radius: 2px;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
-.btn-outline {
-  background: transparent;
-  color: rgba(255,255,255,0.85);
-  border: 1px solid rgba(255,255,255,0.4);
-  padding: 12px 28px;
-  font-family: var(--mono);
-  font-size: 0.75rem;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  border-radius: 2px;
-  transition: border-color 0.2s;
-}
-.btn-outline:hover { border-color: white; color: white; }
-
-/* ── FOOTER ── */
-footer {
-  background: var(--ink);
-  color: rgba(255,255,255,0.5);
-  padding: 28px 56px 28px 96px;
-  display: flex; justify-content: space-between; align-items: center;
-  flex-wrap: wrap; gap: 12px;
-  position: relative; z-index: 1;
-  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.5px;
-  transition: background 0.4s;
-}
-.footer-logo { color: white; font-size: 0.8rem; }
-.footer-logo em { color: var(--accent); font-style: normal; }
-.footer-links { display: flex; gap: 20px; }
-.footer-links a:hover { color: white; }
-
-/* ── BACK TO TOP ── */
-#back-top {
-  position: fixed; bottom: 28px; right: 28px; z-index: 150;
-  font-family: var(--mono); font-size: 0.65rem; letter-spacing: 1px;
-  color: var(--accent);
-  background: var(--bg);
-  border: 1px solid var(--accent);
-  border-radius: 2px;
-  padding: 6px 14px;
-  cursor: pointer;
-  box-shadow: 2px 2px 0 var(--shadow);
-  transform: rotate(-1.5deg);
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.3s;
-}
-#back-top.visible { opacity: 1; pointer-events: all; }
-
-/* ── TWEAKS PANEL ── */
-#tweaks {
-  position: fixed; bottom: 16px; left: 16px; z-index: 300;
-  width: 240px;
-  background: rgba(245,242,235,0.92);
-  border: 1px solid var(--card-border);
-  border-radius: 4px;
-  box-shadow: 4px 4px 0 var(--shadow);
-  font-family: var(--mono);
-  backdrop-filter: blur(16px);
-  overflow: hidden;
-  transition: transform 0.3s, background 0.4s;
-}
-.theme-night #tweaks { background: rgba(15,25,45,0.92); }
-#tweaks.collapsed { transform: translateY(calc(100% - 34px)); }
-.tweaks-header {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--rule);
-  cursor: pointer;
-  font-size: 0.62rem; letter-spacing: 1.5px; text-transform: uppercase;
-  color: var(--ink-dim);
-}
-.tweaks-body { padding: 14px 12px; display: flex; flex-direction: column; gap: 12px; }
-.tweak-row { display: flex; flex-direction: column; gap: 5px; }
-.tweak-label { font-size: 0.6rem; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-dim); }
-.tweak-seg {
-  display: flex; border: 1px solid var(--rule); border-radius: 2px; overflow: hidden;
-}
-.tweak-seg button {
-  flex: 1; background: transparent; border: none; border-right: 1px solid var(--rule);
-  padding: 5px 0; font-family: var(--mono); font-size: 0.62rem;
-  color: var(--ink-dim); transition: all 0.15s; letter-spacing: 0.5px;
-}
-.tweak-seg button:last-child { border-right: none; }
-.tweak-seg button.active, .tweak-seg button:hover {
-  background: var(--accent2); color: white;
-}
-.tweak-accents { display: flex; gap: 6px; }
-.accent-dot {
-  width: 20px; height: 20px; border-radius: 50%; cursor: pointer;
-  border: 2px solid transparent;
-  transition: transform 0.2s, border-color 0.2s;
-}
-.accent-dot.selected { border-color: var(--ink); transform: scale(1.15); }
-
-/* ── KEYBOARD HINTS ── */
-#kb-hints {
-  position: fixed; bottom: 12px; right: 80px; z-index: 100;
-  font-family: var(--mono); font-size: 0.58rem;
-  color: var(--ink-dim); letter-spacing: 0.5px;
-  opacity: 0.6; pointer-events: none;
-}
-kbd {
-  display: inline-block;
-  background: var(--card);
-  border: 1px solid var(--rule);
-  border-radius: 2px;
-  padding: 1px 5px;
-  font-family: var(--mono); font-size: 0.58rem;
-  color: var(--ink);
-  box-shadow: 0 1px 0 var(--rule);
-}
-
-/* ── EASTER EGG MODAL ── */
-#egg-modal {
-  position: fixed; inset: 0; z-index: 500;
-  background: rgba(13,27,62,0.6);
-  backdrop-filter: blur(4px);
-  display: flex; align-items: center; justify-content: center;
-  padding: 32px;
-  opacity: 0; pointer-events: none;
-  transition: opacity 0.3s;
-}
-#egg-modal.open { opacity: 1; pointer-events: all; }
-.egg-box {
-  background: var(--bg);
-  border: 2px solid var(--accent2);
-  padding: 36px 40px;
-  max-width: 500px; width: 100%;
-  box-shadow: 12px 14px 0 rgba(13,27,62,0.25);
-  transform: rotate(-1.5deg);
-  position: relative;
-  transition: background 0.4s;
-}
-.egg-tape {
-  position: absolute; top: -10px; left: 30px;
-  width: 80px; height: 20px;
-  background: rgba(232,160,32,0.65);
-  transform: rotate(-5deg);
-}
-.egg-label {
-  font-family: var(--mono); font-size: 0.62rem;
-  letter-spacing: 2px; text-transform: uppercase;
-  color: var(--accent); margin-bottom: 14px;
-}
-.egg-quote {
-  font-family: var(--serif);
-  font-size: 1.3rem;
-  color: var(--ink);
-  line-height: 1.5;
-  font-style: italic;
-  margin-bottom: 14px;
-}
-.egg-body {
-  font-family: var(--mono); font-size: 0.72rem;
-  color: var(--ink-soft); line-height: 1.7;
-}
-.egg-dismiss {
-  margin-top: 20px;
-  font-family: var(--mono); font-size: 0.62rem;
-  color: var(--ink-dim);
-}
-
-/* ── SECTION: JOURNEY bg ── */
-#journey-section {
-  background: var(--accent2);
-  max-width: none; padding: 72px 56px 72px 96px;
-  transition: background 0.4s;
-}
-#journey-section .drawing-label { color: rgba(255,255,255,0.5); }
-#journey-section .drawing-label::after { background: rgba(255,255,255,0.25); }
-#journey-section .sec-title { color: white; }
-#journey-section .sec-title em { color: var(--gold); }
-#journey-section .sec-sub { color: rgba(255,255,255,0.6); }
-#journey-section .journey-title { color: white; }
-#journey-section .journey-desc { color: rgba(255,255,255,0.65); }
-#journey-section .journey-stage-tag { color: rgba(255,255,255,0.4); }
-#journey-section .journey-item { border-bottom-color: rgba(255,255,255,0.1); }
-#journey-section .stage-btn { border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.55); }
-#journey-section .stage-btn.active, #journey-section .stage-btn:hover {
-  background: rgba(255,255,255,0.15); color: white; border-color: rgba(255,255,255,0.4);
-}
-#journey-section .chip-gray { border-color: rgba(255,255,255,0.2); color: rgba(255,255,255,0.5); }
-#journey-section .dot-k8   { border-color: var(--accent); color: var(--accent); background: rgba(244,162,148,0.15); }
-#journey-section .dot-912  { border-color: var(--gold);   color: var(--gold);   background: rgba(240,192,96,0.12); }
-#journey-section .dot-uni  { border-color: rgba(255,255,255,0.5); color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.07); }
-#journey-section .dot-pro  { border-color: rgba(255,255,255,0.35); color: rgba(255,255,255,0.55); background: rgba(255,255,255,0.05); }
-.theme-night #journey-section { background: rgba(10,18,40,0.9); }
-
-/* ── MISC ── */
-.separator {
-  border: none;
-  border-top: 1px solid var(--rule);
-  margin: 0;
-}
-.centered { text-align: center; }
+#hero { min-height:100vh; display:flex; flex-direction:column; justify-content:center; padding:80px 56px 56px 96px; position:relative; z-index:1; background:var(--tex-hero); }
+.hero-meta { font-family:var(--mono); font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; color:var(--ink-dim); margin-bottom:20px; display:flex; gap:20px; flex-wrap:wrap; }
+h1.hero-h1 { font-family:var(--serif); font-size:clamp(3.5rem,9vw,7.5rem); line-height:0.95; letter-spacing:-2px; color:var(--ink); margin-bottom:28px; max-width:900px; overflow:visible; padding-bottom:12px; }
+h1.hero-h1 em { color:var(--accent); font-style:italic; }
+.blueprint-word { position:relative; display:inline-block; }
+.blueprint-word::after { content:''; position:absolute; left:0; right:0; bottom:-6px; height:3px; background:var(--accent); transform:scaleX(0); transform-origin:left; transition:transform 0.6s cubic-bezier(0.16,1,0.3,1) 0.3s; }
+.blueprint-word.seen::after { transform:scaleX(1); }
+.hero-body { display:grid; grid-template-columns:1.5fr 1fr; gap:56px; margin-top:8px; max-width:900px; }
+.hero-tagline { font-family:var(--sans); font-size:1.1rem; line-height:1.75; color:var(--ink-soft); font-weight:400; }
+.hero-actions { display:flex; gap:12px; margin-top:24px; flex-wrap:wrap; }
+.identity-card { border:1.5px solid var(--card-border); padding:20px; background:var(--card); transform:rotate(1.2deg); box-shadow:4px 4px 0 var(--shadow); position:relative; }
+.identity-card::before { content:'IDENTITY — LFB-001'; position:absolute; top:-10px; left:16px; font-family:var(--mono); font-size:0.58rem; letter-spacing:1.5px; color:var(--ink-dim); background:var(--bg); padding:0 6px; }
+.identity-card table { border-collapse:collapse; width:100%; font-family:var(--mono); font-size:0.72rem; line-height:2; }
+.identity-card td:first-child { color:var(--ink-dim); padding-right:12px; white-space:nowrap; }
+.val-accent { color:var(--accent); }
+.hero-stats { display:flex; gap:40px; margin-top:40px; padding-top:24px; border-top:1px solid var(--rule); max-width:900px; }
+.stat-num { font-family:var(--serif); font-size:2.4rem; color:var(--accent2); display:block; line-height:1; }
+.stat-label { font-family:var(--mono); font-size:0.6rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-dim); margin-top:4px; }
+#about { background:var(--tex-about); }
+#journey-section { background:var(--accent2); max-width:none; padding:72px 56px 72px 96px; }
+@media (prefers-color-scheme:dark) { #journey-section { background:#0a1228; } }
+#journey-section .drawing-label { color:rgba(255,255,255,0.5); }
+#journey-section .drawing-label::after { background:rgba(255,255,255,0.25); }
+#journey-section .sec-title { color:white; }
+#journey-section .sec-title em { color:var(--gold); }
+#journey-section .sec-sub { color:rgba(255,255,255,0.6); }
+.stage-cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin-top:32px; }
+.stage-card { border:1.5px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.05); padding:24px; text-decoration:none; transition:background 0.2s,transform 0.2s; position:relative; overflow:hidden; display:block; }
+.stage-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; transform:scaleY(0); transform-origin:top; transition:transform 0.3s; }
+.stage-card:hover { background:rgba(255,255,255,0.1); transform:translateY(-2px); }
+.stage-card:hover::before { transform:scaleY(1); }
+.sc-k8::before { background:var(--accent); }
+.sc-912::before { background:var(--gold); }
+.sc-uni::before { background:rgba(255,255,255,0.6); }
+.sc-pro::before { background:rgba(255,255,255,0.4); }
+.stage-card-tag { font-family:var(--mono); font-size:0.58rem; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:8px; }
+.stage-card-title { font-family:var(--serif); font-size:1.4rem; color:white; margin-bottom:6px; }
+.stage-card-desc { font-family:var(--sans); font-size:0.85rem; color:rgba(255,255,255,0.6); line-height:1.65; }
+.stage-card-arrow { position:absolute; bottom:16px; right:16px; font-family:var(--mono); color:rgba(255,255,255,0.3); font-size:1rem; transition:color 0.2s,transform 0.2s; }
+.stage-card:hover .stage-card-arrow { color:white; transform:translateX(3px); }
+#features { background:var(--tex-features); }
+.features-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:1px; border:1px solid var(--rule); background:var(--rule); margin-top:40px; }
+.feature-card { background:var(--card); padding:28px; position:relative; overflow:hidden; }
+.feature-card::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:var(--accent); transform:scaleY(0); transform-origin:top; transition:transform 0.3s; }
+.feature-card:hover::before { transform:scaleY(1); }
+.feature-num { font-family:var(--mono); font-size:0.58rem; color:var(--ink-dim); letter-spacing:2px; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+.feature-num::before { content:''; width:20px; height:1px; background:var(--rule); }
+.feature-title { font-family:var(--serif); font-size:1.15rem; color:var(--ink); margin-bottom:8px; }
+.feature-body { font-family:var(--sans); font-size:0.85rem; color:var(--ink-soft); line-height:1.7; }
+#pricing { background:var(--bg); }
+.pricing-toggle { display:flex; align-items:center; gap:12px; margin-bottom:36px; font-family:var(--mono); font-size:0.7rem; letter-spacing:1px; }
+.toggle-track { width:44px; height:24px; border-radius:12px; background:var(--rule); border:1.5px solid var(--card-border); position:relative; cursor:pointer; transition:background 0.2s; }
+.toggle-track.on { background:var(--accent2); }
+.toggle-thumb { position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:white; transition:transform 0.2s; box-shadow:0 1px 3px var(--shadow); }
+.toggle-track.on .toggle-thumb { transform:translateX(20px); }
+.pricing-save { background:var(--accent); color:white; font-family:var(--mono); font-size:0.58rem; padding:2px 8px; border-radius:2px; letter-spacing:1px; }
+.pricing-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:0; border:1px solid var(--card-border); margin-top:8px; }
+.pricing-card { padding:32px; border-right:1px solid var(--card-border); background:var(--card); position:relative; }
+.pricing-card:last-child { border-right:none; }
+.pricing-card.featured { background:var(--accent2); color:white; }
+.pricing-badge { position:absolute; top:-1px; left:50%; transform:translateX(-50%); background:var(--accent); color:white; font-family:var(--mono); font-size:0.58rem; padding:3px 12px; letter-spacing:1.5px; text-transform:uppercase; }
+.pricing-tier { font-family:var(--mono); font-size:0.65rem; letter-spacing:2px; text-transform:uppercase; color:var(--ink-dim); margin-bottom:8px; }
+.pricing-card.featured .pricing-tier { color:rgba(255,255,255,0.6); }
+.pricing-name { font-family:var(--serif); font-size:1.6rem; color:var(--ink); margin-bottom:16px; }
+.pricing-card.featured .pricing-name { color:white; }
+.pricing-price { font-family:var(--serif); font-size:2.4rem; color:var(--accent2); line-height:1; margin-bottom:4px; }
+.pricing-card.featured .pricing-price { color:white; }
+.pricing-period { font-family:var(--mono); font-size:0.65rem; color:var(--ink-dim); margin-bottom:24px; }
+.pricing-card.featured .pricing-period { color:rgba(255,255,255,0.5); }
+.pricing-features { list-style:none; display:flex; flex-direction:column; gap:8px; margin-bottom:28px; }
+.pricing-features li { font-family:var(--sans); font-size:0.85rem; color:var(--ink-soft); display:flex; gap:8px; }
+.pricing-card.featured .pricing-features li { color:rgba(255,255,255,0.75); }
+.pricing-features li::before { content:'✓'; color:var(--accent); flex-shrink:0; font-family:var(--mono); }
+.pricing-card.featured .pricing-features li::before { color:var(--gold); }
+#courses { background:var(--bg); }
+.courses-toolbar { display:flex; gap:8px; margin:28px 0; flex-wrap:wrap; align-items:center; }
+.c-filter-btn { background:transparent; border:1px solid var(--rule); padding:4px 12px; font-family:var(--mono); font-size:0.62rem; letter-spacing:1px; text-transform:uppercase; color:var(--ink-dim); border-radius:2px; transition:all 0.2s; }
+.c-filter-btn.active,.c-filter-btn:hover { border-color:var(--accent); color:var(--accent); background:rgba(192,57,43,0.06); }
+.courses-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; }
+.course-card { border:1px solid var(--card-border); background:var(--card); padding:20px; cursor:pointer; position:relative; transition:transform 0.25s,box-shadow 0.25s,border-color 0.25s; }
+.course-card:hover { transform:translateY(-3px) rotate(-0.3deg); box-shadow:4px 6px 0 var(--shadow); border-color:var(--accent); }
+.course-stripe { position:absolute; bottom:0; left:0; right:0; height:4px; }
+.course-level { font-family:var(--mono); font-size:0.58rem; letter-spacing:2px; text-transform:uppercase; color:var(--ink-dim); margin-bottom:10px; }
+.course-title { font-family:var(--serif); font-size:1.05rem; color:var(--ink); margin-bottom:6px; line-height:1.3; }
+.course-desc { font-family:var(--sans); font-size:0.8rem; color:var(--ink-soft); line-height:1.6; }
+#quotes { background:var(--tex-quotes); }
+.quotes-toolbar { display:flex; gap:8px; margin-bottom:28px; flex-wrap:wrap; align-items:center; }
+.q-filter-btn { background:transparent; border:1px solid var(--rule); padding:4px 12px; font-family:var(--mono); font-size:0.62rem; letter-spacing:1px; text-transform:uppercase; color:var(--ink-dim); border-radius:2px; transition:all 0.2s; }
+.q-filter-btn.active,.q-filter-btn:hover { border-color:var(--accent); color:var(--accent); background:rgba(192,57,43,0.06); }
+.q-shuffle { margin-left:auto; background:var(--accent2); border:none; padding:5px 14px; font-family:var(--mono); font-size:0.62rem; letter-spacing:1px; text-transform:uppercase; color:white; border-radius:2px; cursor:pointer; }
+.quotes-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:20px; }
+.q-card { padding:24px; border:1px solid var(--rule); background:var(--card); position:relative; transition:transform 0.25s,border-color 0.25s; }
+.q-card:hover { transform:rotate(-0.5deg); border-color:var(--accent); }
+.q-open-quote { position:absolute; top:8px; left:14px; font-family:var(--serif); font-size:4rem; color:var(--accent); opacity:0.12; line-height:1; pointer-events:none; }
+.q-text { font-family:var(--serif); font-size:1.05rem; line-height:1.5; color:var(--ink); font-style:italic; padding-top:12px; position:relative; z-index:1; }
+.q-attrib { margin-top:12px; font-family:var(--mono); font-size:0.65rem; color:var(--ink-dim); }
+.q-copy-btn { position:absolute; bottom:10px; right:10px; background:none; border:none; font-family:var(--mono); font-size:0.6rem; color:var(--ink-dim); opacity:0; transition:opacity 0.2s; cursor:pointer; }
+.q-card:hover .q-copy-btn { opacity:1; }
+#contact { background:var(--bg); }
+.contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:56px; margin-top:40px; }
+.contact-form { display:flex; flex-direction:column; gap:14px; }
+.form-field { display:flex; flex-direction:column; gap:5px; }
+.form-label { font-family:var(--mono); font-size:0.62rem; letter-spacing:1.5px; text-transform:uppercase; color:var(--ink-dim); }
+.form-input { background:var(--card); border:1px solid var(--card-border); padding:10px 12px; font-family:var(--mono); font-size:0.8rem; color:var(--ink); outline:none; border-radius:2px; transition:border-color 0.2s; }
+.form-input:focus { border-color:var(--accent); }
+textarea.form-input { resize:vertical; min-height:100px; }
+.contact-info { display:flex; flex-direction:column; gap:24px; padding-top:4px; }
+.contact-info-item { font-family:var(--mono); font-size:0.78rem; color:var(--ink-dim); line-height:1.8; }
+.contact-info-item strong { display:block; color:var(--ink); margin-bottom:2px; letter-spacing:0.5px; }
+#cta { background:var(--accent2); text-align:center; padding:80px 56px; position:relative; z-index:1; max-width:none; }
+@media (prefers-color-scheme:dark) { #cta { background:#0e1f40; } }
+#cta::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,0.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.04) 1px,transparent 1px); background-size:48px 48px; }
+#cta .sec-title { color:white; position:relative; z-index:1; }
+#cta .sec-sub { color:rgba(255,255,255,0.6); margin:0 auto 32px; position:relative; z-index:1; text-align:center; max-width:460px; }
+#cta .drawing-label { color:rgba(255,255,255,0.45); position:relative; z-index:1; justify-content:center; }
+#cta .drawing-label::after { background:rgba(255,255,255,0.25); }
+.cta-btns { display:flex; gap:12px; justify-content:center; position:relative; z-index:1; flex-wrap:wrap; }
+.cta-btns .btn-primary { background:white; color:var(--accent2); }
+.cta-btns .btn-outline { color:rgba(255,255,255,0.85); border-color:rgba(255,255,255,0.4); }
+.cta-btns .btn-outline:hover { border-color:white; color:white; background:transparent; }
 </style>
 </head>
 <body>
 
-<!-- Progress bar -->
-<div id="progress-bar"></div>
-
-<!-- Binder spine -->
-<div id="chrome-spine"></div>
-
-<!-- Keyboard hints -->
-<div id="kb-hints">
-  <kbd>T</kbd> theme &nbsp;·&nbsp; <kbd>F</kbd> ?
+<div id="blueprint-reveal">
+  <div class="reveal-grid">
+    <div class="reveal-grid-lines"></div>
+    <div class="reveal-text">Lauf<em style="color:var(--accent);font-style:italic;">bahn</em></div>
+  </div>
+  <div class="reveal-label">Track for a Life</div>
 </div>
 
-<!-- ── NAV ── -->
-<nav id="main-nav">
-  <div class="nav-logo">
-    Lauf<em>bahn</em><sub>v1.0</sub>
+<div id="progress-bar"></div>
+<div id="chrome-spine"></div>
+
+<div id="stage-tracker">
+  <div class="tracker-inner">
+    <a class="tracker-step active" href="grade38.html"><span class="tracker-dot"></span>Grade 3–8</a>
+    <a class="tracker-step" href="highschool.html"><span class="tracker-dot"></span>Class 9–12</a>
+    <a class="tracker-step" href="university.html"><span class="tracker-dot"></span>University</a>
+    <a class="tracker-step" href="professional.html"><span class="tracker-dot"></span>Professional</a>
   </div>
+</div>
+
+<div id="kb-hints"><kbd>Q</kbd> quiz &nbsp;·&nbsp; <kbd>F</kbd> ?</div>
+
+<nav id="main-nav">
+  <div class="nav-logo"><span class="logo-lauf">Lauf</span><span class="logo-bahn">bahn</span><sub>v5</sub></div>
   <ul class="nav-links">
     <li><a href="#about">about</a></li>
     <li><a href="#journey-section">journey</a></li>
     <li><a href="#features">features</a></li>
+    <li><a href="#pricing">pricing</a></li>
     <li><a href="#courses">courses</a></li>
     <li><a href="#quotes">quotes</a></li>
-    <li><a href="#profile">profile</a></li>
-    <li><a href="#cta">enroll</a></li>
+    <li><a href="#contact">contact</a></li>
   </ul>
-  <div class="nav-right">
-    <button class="btn-theme" id="theme-toggle">◑ night</button>
-  </div>
 </nav>
 
-<!-- ── HERO ── -->
 <section id="hero">
-  <div class="margin-note" style="top: 120px;" id="mn-hero">DWG · LFB-H01</div>
-  <div class="dwg-num">
-    DWG NO. <span>LFB-001</span><br/>
-    REV. <span>A</span><br/>
-    SCALE <span>LIFE:1</span>
-  </div>
-
+  <div class="margin-note" style="top:120px;">DWG · LFB-H01</div>
+  <div class="dwg-num">DWG NO. <span>LFB-001</span><br/>REV. <span>A</span><br/>SCALE <span>LIFE:1</span></div>
   <div class="hero-meta">
-    <span>LAUFBAHN</span>
-    <span class="val-accent">·</span>
-    <span>DRAWING NO. LFB-001</span>
-    <span class="val-accent">·</span>
-    <span id="hero-date"></span>
-    <span class="val-accent">·</span>
-    <span>SCALE: K → CAREER</span>
+    <span>LAUFBAHN</span><span>·</span><span>DRAWING NO. LFB-001</span><span>·</span><span class="auto-date"></span><span>·</span><span>GRADE 3 → CAREER</span>
   </div>
-
   <h1 class="hero-h1 reveal" id="hero-title">
-    Every stage<br/>
-    of your <span class="blueprint-word" id="hero-bp">life</span>,<br/>
-    <em>planned.</em>
+    Every stage<br/>of your <span class="blueprint-word" id="hero-bp">life</span>,<br/><em>guided.</em>
   </h1>
-
-  <div class="hero-body reveal" style="transition-delay: 0.15s;">
-    <p class="hero-tagline">
-      Laufbahn is the world's first cradle-to-career education platform — designed like a
-      blueprint for a building. Every beam placed deliberately, every stage load-bearing,
-      nothing left to chance.
-    </p>
+  <div class="hero-body reveal" style="transition-delay:0.15s;">
+    <div>
+      <p class="hero-tagline">Laufbahn is the world's first cradle-to-career education platform — designed like a blueprint for a building. Every beam placed deliberately, every stage load-bearing, nothing left to chance.</p>
+      <div class="hero-actions">
+        <button class="btn-primary" onclick="openQuiz()">Find My Stage →</button>
+        <a href="#journey-section" class="btn-outline">See the Journey</a>
+      </div>
+    </div>
     <div class="identity-card">
       <table>
         <tr><td>MISSION</td><td class="val-accent">Education for life</td></tr>
-        <tr><td>SCOPE</td><td>K → Career</td></tr>
-        <tr><td>STAGES</td><td>04 (see §3)</td></tr>
+        <tr><td>SCOPE</td><td>Grade 3 → Career</td></tr>
+        <tr><td>STAGES</td><td>04 (see §2)</td></tr>
         <tr><td>COURSES</td><td>500+</td></tr>
-        <tr><td>PLATFORM</td><td>Laufbahn v1.0</td></tr>
+        <tr><td>PLATFORM</td><td>Laufbahn v5</td></tr>
         <tr><td>HQ</td><td>Global · Remote-first</td></tr>
       </table>
     </div>
   </div>
-
-  <div class="hero-stats reveal" style="transition-delay: 0.3s;">
-    <div>
-      <span class="stat-num">04</span>
-      <div class="stat-label">Life Stages</div>
-    </div>
-    <div>
-      <span class="stat-num">500+</span>
-      <div class="stat-label">Courses</div>
-    </div>
-    <div>
-      <span class="stat-num">∞</span>
-      <div class="stat-label">Possibilities</div>
-    </div>
-    <div>
-      <span class="stat-num">1</span>
-      <div class="stat-label">Platform for life</div>
-    </div>
+  <div class="hero-stats reveal" style="transition-delay:0.3s;">
+    <div><span class="stat-num">04</span><div class="stat-label">Life Stages</div></div>
+    <div><span class="stat-num">500+</span><div class="stat-label">Courses</div></div>
+    <div><span class="stat-num">∞</span><div class="stat-label">Possibilities</div></div>
+    <div><span class="stat-num">1</span><div class="stat-label">Platform for life</div></div>
   </div>
+  <svg class="leader-svg" viewBox="0 0 900 60" style="margin-top:32px;">
+    <line class="leader-line" x1="0" y1="30" x2="820" y2="30"/>
+    <polygon class="leader-arrow" points="830,30 818,25 818,35"/>
+    <text class="leader-label" x="200" y="22">GRADE 3 → CAREER TRACK</text>
+    <line class="leader-line" x1="200" y1="30" x2="200" y2="50"/>
+    <line class="leader-line" x1="450" y1="30" x2="450" y2="50"/>
+    <line class="leader-line" x1="640" y1="30" x2="640" y2="50"/>
+    <text class="leader-label" x="185" y="58">G3–8</text>
+    <text class="leader-label" x="438" y="58">9–12</text>
+    <text class="leader-label" x="628" y="58">UNI+</text>
+  </svg>
 </section>
 
-<!-- ── ABOUT ── -->
 <section id="about">
-  <div class="margin-note" style="top: 60px;" id="mn-about">§01 · ABOUT</div>
+  <div class="margin-note" style="top:60px;">§01 · ABOUT</div>
   <div class="dwg-num">DWG NO. <span>LFB-002</span><br/>SECTION <span>§01</span></div>
-
   <div class="reveal">
     <div class="drawing-label">§01 · About</div>
     <h2 class="sec-title">Not a school.<br/>A <em>blueprint.</em></h2>
-    <p class="sec-sub" style="margin-bottom: 24px;">
-      Most education platforms teach subjects. Laufbahn builds <em>people</em>. We map the full arc of a human life — from a child's first spark of curiosity to a professional's peak — and design deliberate support for every single step.
-    </p>
-    <p class="sec-sub">
-      Like an architect who refuses to build without understanding the ground it stands on, we refuse to teach without understanding who the learner is, where they're going, and what they'll need when they get there.
-    </p>
+    <p class="sec-sub" style="margin-bottom:20px;">Most education platforms teach subjects. Laufbahn builds <em>people</em>. We map the full arc of a human life — from a Grade 3 student's first spark of curiosity to a professional's peak — with deliberate support at every step.</p>
+    <p class="sec-sub">Like an architect who refuses to build without understanding the ground, we refuse to teach without understanding who the learner is, where they're going, and what they'll need when they get there.</p>
   </div>
+  <svg class="leader-svg" viewBox="0 0 900 60" style="margin-top:40px;">
+    <line class="leader-line" x1="96" y1="30" x2="800" y2="30" stroke-dasharray="6,4"/>
+    <text class="leader-label" x="410" y="22">§01 → §02</text>
+    <polygon class="leader-arrow" points="810,30 798,25 798,35"/>
+  </svg>
 </section>
 
-<hr class="separator" />
+<hr class="separator"/>
 
-<!-- ── JOURNEY ── -->
 <section id="journey-section" class="full-w">
   <div class="reveal">
     <div class="drawing-label">§02 · The Path</div>
     <h2 class="sec-title">One platform,<br/>a lifetime of <em>growth.</em></h2>
-    <p class="sec-sub" style="margin-bottom: 32px;">
-      Four stages. One continuous thread. From the first classroom to the corner office — we're with you at every transition.
-    </p>
-
-    <!-- Stage filter -->
-    <div class="stage-nav" id="stage-nav">
-      <button class="stage-btn active" data-stage="all">All</button>
-      <button class="stage-btn" data-stage="k8">K–8</button>
-      <button class="stage-btn" data-stage="912">9–12</button>
-      <button class="stage-btn" data-stage="uni">University</button>
-      <button class="stage-btn" data-stage="pro">Professional</button>
-    </div>
-
-    <div class="journey-list" id="journey-list">
-      <div class="journey-connector"></div>
-
-      <div class="journey-item reveal" data-stage="k8">
-        <div class="journey-dot dot-k8">K–8</div>
-        <div>
-          <div class="journey-stage-tag">Stage 01 · Kindergarten to Class 8</div>
-          <div class="journey-title">Explore Everything</div>
-          <div class="journey-desc">
-            Hands-on learning across science, art, language, mathematics, and sport. No pressure — just discovery. We help children find what makes them come alive, nurturing passion before profession. The aim: a child who knows what they love before anyone tells them what to be.
-          </div>
-          <div class="journey-chips">
-            <span class="chip chip-red">Hands-On Projects</span>
-            <span class="chip chip-red">Exploratory Labs</span>
-            <span class="chip chip-red">Interest Mapping</span>
-            <span class="chip chip-red">Play-Based Learning</span>
-            <span class="chip chip-gray">No exams, only discovery</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="journey-item reveal" data-stage="912" style="transition-delay: 0.1s;">
-        <div class="journey-dot dot-912">9–12</div>
-        <div>
-          <div class="journey-stage-tag">Stage 02 · Class 9 to Class 12</div>
-          <div class="journey-title">Specialise & Launch</div>
-          <div class="journey-desc">
-            Deep-dive into chosen fields. Train for specific jobs and the real working world. We build your CV, craft personalised Letters of Recommendation, and guide you to the right colleges and countries — matched exactly to your goals, strengths, and circumstances.
-          </div>
-          <div class="journey-chips">
-            <span class="chip chip-gold">CV Builder</span>
-            <span class="chip chip-gold">College Matching</span>
-            <span class="chip chip-gold">LOR Suite</span>
-            <span class="chip chip-gold">Country Guidance</span>
-            <span class="chip chip-gray">Field-specific training</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="journey-item reveal" data-stage="uni" style="transition-delay: 0.2s;">
-        <div class="journey-dot dot-uni">UNI</div>
-        <div>
-          <div class="journey-stage-tag">Stage 03 · College & University</div>
-          <div class="journey-title">Transition to the World</div>
-          <div class="journey-desc">
-            Learn workplace etiquette, professional communication, and how to land your first job. Build a polished graduate resume and enter your career with real-world readiness — not just a degree. The gap between campus and career, finally bridged.
-          </div>
-          <div class="journey-chips">
-            <span class="chip chip-blue">Resume Crafting</span>
-            <span class="chip chip-blue">Career Prep</span>
-            <span class="chip chip-blue">Work Etiquette</span>
-            <span class="chip chip-blue">Internship Finder</span>
-            <span class="chip chip-gray">Industry mentors</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="journey-item reveal" data-stage="pro" style="transition-delay: 0.3s;">
-        <div class="journey-dot dot-pro">PRO</div>
-        <div>
-          <div class="journey-stage-tag">Stage 04 · Working Professional</div>
-          <div class="journey-title">Reach Your Peak</div>
-          <div class="journey-desc">
-            Discover the best opportunities, gain experience at the right places, and showcase your skills on your LaufProfile — a living, dynamic professional identity that grows with you. More than LinkedIn. A full record of who you are and how you got there.
-          </div>
-          <div class="journey-chips">
-            <span class="chip chip-gray">Job Matching</span>
-            <span class="chip chip-gray">LaufProfile</span>
-            <span class="chip chip-gray">Experience Curation</span>
-            <span class="chip chip-gray">Skill Showcase</span>
-          </div>
-        </div>
-      </div>
+    <p class="sec-sub" style="margin-bottom:32px;">Four stages. One continuous thread. Click any stage to explore it fully.</p>
+    <div class="stage-cards">
+      <a class="stage-card sc-k8 reveal" href="grade38.html">
+        <div class="stage-card-tag">Stage 01 · Grade 3 to 8</div>
+        <div class="stage-card-title">Explore Everything</div>
+        <div class="stage-card-desc">Hands-on learning across science, art, language, and sport. Find what makes you come alive before anyone tells you what to be.</div>
+        <div class="stage-card-arrow">→</div>
+      </a>
+      <a class="stage-card sc-912 reveal" href="highschool.html" style="transition-delay:0.1s;">
+        <div class="stage-card-tag">Stage 02 · Class 9 to 12</div>
+        <div class="stage-card-title">Specialise & Launch</div>
+        <div class="stage-card-desc">Train for specific fields. Build your CV, craft your LOR, and get matched to the right colleges and countries for you.</div>
+        <div class="stage-card-arrow">→</div>
+      </a>
+      <a class="stage-card sc-uni reveal" href="university.html" style="transition-delay:0.2s;">
+        <div class="stage-card-tag">Stage 03 · University</div>
+        <div class="stage-card-title">Transition to the World</div>
+        <div class="stage-card-desc">Workplace etiquette, professional communication, resume building. The gap between campus and career, finally bridged.</div>
+        <div class="stage-card-arrow">→</div>
+      </a>
+      <a class="stage-card sc-pro reveal" href="professional.html" style="transition-delay:0.3s;">
+        <div class="stage-card-tag">Stage 04 · Professional</div>
+        <div class="stage-card-title">Reach Your Peak</div>
+        <div class="stage-card-desc">Job matching, experience curation, and your LaufProfile — a living identity that grows with your career.</div>
+        <div class="stage-card-arrow">→</div>
+      </a>
     </div>
   </div>
 </section>
 
-<!-- ── FEATURES ── -->
-<section id="features">
-  <div class="margin-note" style="top: 60px;" id="mn-feat">§03 · FEATURES</div>
-  <div class="dwg-num">DWG NO. <span>LFB-003</span><br/>SECTION <span>§03</span></div>
+<hr class="separator"/>
 
+<section id="features">
+  <div class="margin-note" style="top:60px;">§03 · FEATURES</div>
+  <div class="dwg-num">DWG NO. <span>LFB-003</span><br/>SECTION <span>§03</span></div>
   <div class="reveal">
     <div class="drawing-label">§03 · Platform Features</div>
     <h2 class="sec-title">Everything you need,<br/><em>nothing you don't.</em></h2>
-    <p class="sec-sub">Purpose-built tools for every stage — thoughtfully designed to support learners at any age and professionals at any level.</p>
+    <p class="sec-sub">Purpose-built tools for every stage — from a child's first interest discovery to a professional's job search.</p>
   </div>
-
-  <div class="features-grid reveal" style="transition-delay: 0.15s;">
-    <div class="feature-card">
-      <div class="feature-num">F-01</div>
-      <div class="feature-title">Interest Discovery Engine</div>
-      <div class="feature-body">Adaptive assessments and exploratory modules that reveal a child's natural inclinations — across science, arts, sport, tech, and more. No labels, just directions.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-num">F-02</div>
-      <div class="feature-title">Smart CV & Resume Builder</div>
-      <div class="feature-body">Professionally structured, age-appropriate documents that grow with the learner — from first achievements to career highlights. One document, always current.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-num">F-03</div>
-      <div class="feature-title">College & Country Matcher</div>
-      <div class="feature-body">Data-driven recommendations for universities worldwide — factoring in field of study, finances, lifestyle, and career outcomes. No guesswork, just fit.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-num">F-04</div>
-      <div class="feature-title">Letter of Recommendation Suite</div>
-      <div class="feature-body">Guided templates, educator collaboration tools, and review systems to produce standout LORs for global college applications. Built with educators, not around them.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-num">F-05</div>
-      <div class="feature-title">Job Intelligence Platform</div>
-      <div class="feature-body">Curated job matching, salary insights, and experience pathway planning — helping professionals land roles that truly fit their skills and ambitions.</div>
-    </div>
-    <div class="feature-card">
-      <div class="feature-num">F-06</div>
-      <div class="feature-title">LaufProfile</div>
-      <div class="feature-body">Your living professional identity — a dynamic, skill-rich profile that showcases your full journey from curious child to expert. More LinkedIn, less resume.</div>
-    </div>
+  <div class="features-grid reveal" style="transition-delay:0.15s;">
+    <div class="feature-card"><div class="feature-num">F-01</div><div class="feature-title">Interest Discovery Engine</div><div class="feature-body">Adaptive assessments that reveal a child's natural inclinations — science, arts, sport, tech. No labels, just directions.</div></div>
+    <div class="feature-card"><div class="feature-num">F-02</div><div class="feature-title">Smart CV & Resume Builder</div><div class="feature-body">Documents that grow with the learner — from first achievements to career highlights. One document, always current.</div></div>
+    <div class="feature-card"><div class="feature-num">F-03</div><div class="feature-title">College & Country Matcher</div><div class="feature-body">Data-driven university recommendations worldwide — field, finances, lifestyle, career outcomes. No guesswork.</div></div>
+    <div class="feature-card"><div class="feature-num">F-04</div><div class="feature-title">LOR Suite</div><div class="feature-body">Guided templates and educator collaboration tools for standout Letters of Recommendation for global applications.</div></div>
+    <div class="feature-card"><div class="feature-num">F-05</div><div class="feature-title">Job Intelligence</div><div class="feature-body">Curated job matching, salary insights, and experience pathway planning — landing roles that truly fit.</div></div>
+    <div class="feature-card"><div class="feature-num">F-06</div><div class="feature-title">LaufProfile</div><div class="feature-body">Your living professional identity — showcasing your full journey from curious student to seasoned expert.</div></div>
   </div>
 </section>
 
-<hr class="separator" />
+<hr class="separator"/>
 
-<!-- ── COURSES ── -->
-<section id="courses">
-  <div class="margin-note" style="top: 60px;" id="mn-courses">§04 · COURSES</div>
+<section id="pricing">
+  <div class="margin-note" style="top:60px;">§04 · PRICING</div>
   <div class="dwg-num">DWG NO. <span>LFB-004</span><br/>SECTION <span>§04</span></div>
-
   <div class="reveal">
-    <div class="drawing-label">§04 · Courses</div>
-    <h2 class="sec-title">Deep knowledge for<br/>every <em>curious mind.</em></h2>
-    <p class="sec-sub">500+ courses across every stage and subject — from foundational fundamentals to advanced professional mastery.</p>
+    <div class="drawing-label">§04 · Pricing</div>
+    <h2 class="sec-title">Simple pricing,<br/><em>serious value.</em></h2>
+    <p class="sec-sub" style="margin-bottom:28px;">One subscription per stage. Upgrade as you grow.</p>
+    <div class="pricing-toggle">
+      <span>Monthly</span>
+      <div class="toggle-track" id="price-toggle" onclick="togglePricing()"><div class="toggle-thumb"></div></div>
+      <span>Annual</span>
+      <span class="pricing-save">SAVE 20%</span>
+    </div>
   </div>
-
-  <div class="courses-grid reveal" style="transition-delay: 0.15s;" id="courses-grid">
-    <div class="course-card">
-      <div class="course-stripe" style="background: var(--accent);"></div>
-      <div class="course-level">Kindergarten · Ages 5–8</div>
-      <div class="course-title">The World of Science</div>
-      <div class="course-desc">Experiments, nature, and curiosity-driven discovery — learning that the world is a puzzle worth solving.</div>
+  <div class="pricing-grid reveal" style="transition-delay:0.1s;">
+    <div class="pricing-card">
+      <div class="pricing-tier">Stage 01–02</div>
+      <div class="pricing-name">Scholar</div>
+      <div class="pricing-price" id="price-scholar">₹499<span style="font-size:1rem;font-family:var(--mono)">/mo</span></div>
+      <div class="pricing-period">Grade 3 through Class 12</div>
+      <ul class="pricing-features">
+        <li>Interest Discovery Engine</li>
+        <li>Hands-on course library</li>
+        <li>CV Builder (student)</li>
+        <li>College & Country Matcher</li>
+        <li>LOR Suite</li>
+        <li>Parent progress dashboard</li>
+      </ul>
+      <button class="btn-outline" style="width:100%">Get Started</button>
     </div>
-    <div class="course-card">
-      <div class="course-stripe" style="background: var(--accent);"></div>
-      <div class="course-level">Middle School · Class 6–8</div>
-      <div class="course-title">Coding for Creators</div>
-      <div class="course-desc">Build games, animations, and digital art with beginner programming. Logic meets imagination.</div>
+    <div class="pricing-card featured">
+      <div class="pricing-badge">MOST POPULAR</div>
+      <div class="pricing-tier">Stage 03</div>
+      <div class="pricing-name">Graduate</div>
+      <div class="pricing-price" id="price-grad">₹799<span style="font-size:1rem;font-family:var(--mono)">/mo</span></div>
+      <div class="pricing-period">University years</div>
+      <ul class="pricing-features">
+        <li>Everything in Scholar</li>
+        <li>Resume Builder (professional)</li>
+        <li>Internship Finder</li>
+        <li>Work Etiquette courses</li>
+        <li>Industry mentor access</li>
+        <li>Job application tracker</li>
+      </ul>
+      <button class="btn-primary" style="width:100%;background:white;color:var(--accent2)">Get Started</button>
     </div>
-    <div class="course-card">
-      <div class="course-stripe" style="background: var(--gold);"></div>
-      <div class="course-level">High School · Class 9–12</div>
-      <div class="course-title">Career Pathfinding</div>
-      <div class="course-desc">Structured exploration of 40+ career fields with real-world insights from people actually doing the work.</div>
-    </div>
-    <div class="course-card">
-      <div class="course-stripe" style="background: var(--gold);"></div>
-      <div class="course-level">High School · Class 11–12</div>
-      <div class="course-title">College Application Mastery</div>
-      <div class="course-desc">Essays, interviews, shortlists — every step of the global admissions process, made legible.</div>
-    </div>
-    <div class="course-card">
-      <div class="course-stripe" style="background: var(--accent2);"></div>
-      <div class="course-level">University Level</div>
-      <div class="course-title">Professional Communication</div>
-      <div class="course-desc">Emails, presentations, negotiations — the language of work that no university actually teaches you.</div>
-    </div>
-    <div class="course-card">
-      <div class="course-stripe" style="background: var(--accent2);"></div>
-      <div class="course-level">University Level</div>
-      <div class="course-title">First Job Playbook</div>
-      <div class="course-desc">How to find it, land it, navigate it. The unwritten rules of entering the working world for the first time.</div>
-    </div>
-    <div class="course-card">
-      <div class="course-stripe" style="background: var(--ink-soft);"></div>
-      <div class="course-level">Working Professional</div>
-      <div class="course-title">Leadership & Strategy</div>
-      <div class="course-desc">From individual contributor to leader — the skills that compound over a career, not just a quarter.</div>
-    </div>
-    <div class="course-card" style="background: var(--accent2); border-color: var(--accent2); display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; min-height: 140px;">
-      <div style="font-family: var(--serif); font-size: 2rem; color: rgba(255,255,255,0.6); margin-bottom: 6px;">+493</div>
-      <div style="font-family: var(--mono); font-size: 0.65rem; color: rgba(255,255,255,0.45); letter-spacing: 1px;">MORE COURSES</div>
-      <a href="#cta" style="margin-top: 10px; font-family: var(--mono); font-size: 0.62rem; color: var(--gold); letter-spacing: 0.5px;">Browse all →</a>
+    <div class="pricing-card">
+      <div class="pricing-tier">Stage 04</div>
+      <div class="pricing-name">Professional</div>
+      <div class="pricing-price" id="price-pro">₹1,199<span style="font-size:1rem;font-family:var(--mono)">/mo</span></div>
+      <div class="pricing-period">Working life</div>
+      <ul class="pricing-features">
+        <li>Everything in Graduate</li>
+        <li>LaufProfile (public)</li>
+        <li>Job Intelligence Platform</li>
+        <li>Salary benchmarking</li>
+        <li>Leadership courses</li>
+        <li>Priority career support</li>
+      </ul>
+      <button class="btn-outline" style="width:100%">Get Started</button>
     </div>
   </div>
 </section>
 
-<hr class="separator" />
+<hr class="separator"/>
 
-<!-- ── QUOTES ── -->
-<section id="quotes">
-  <div class="margin-note" style="top: 60px;" id="mn-quotes">§05 · QUOTES</div>
+<section id="courses">
+  <div class="margin-note" style="top:60px;">§05 · COURSES</div>
   <div class="dwg-num">DWG NO. <span>LFB-005</span><br/>SECTION <span>§05</span></div>
-
   <div class="reveal">
-    <div class="drawing-label">§05 · Principles</div>
-    <h2 class="sec-title">Words that<br/><em>built us.</em></h2>
-    <p class="sec-sub">The ideas behind Laufbahn. Philosophy, first.</p>
+    <div class="drawing-label">§05 · Courses</div>
+    <h2 class="sec-title">Deep knowledge for<br/>every <em>curious mind.</em></h2>
+    <p class="sec-sub">500+ courses across every stage and subject.</p>
   </div>
+  <div class="courses-toolbar reveal" style="transition-delay:0.1s;" id="courses-toolbar">
+    <button class="c-filter-btn active" data-filter="all">All</button>
+    <button class="c-filter-btn" data-filter="science">Science</button>
+    <button class="c-filter-btn" data-filter="arts">Arts</button>
+    <button class="c-filter-btn" data-filter="tech">Technology</button>
+    <button class="c-filter-btn" data-filter="business">Business</button>
+    <button class="c-filter-btn" data-filter="life">Life Skills</button>
+  </div>
+  <div class="courses-grid reveal" style="transition-delay:0.2s;" id="courses-grid"></div>
+</section>
 
-  <div class="quotes-toolbar reveal" style="transition-delay: 0.1s;" id="quotes-toolbar">
+<hr class="separator"/>
+
+<section id="quotes">
+  <div class="margin-note" style="top:60px;">§06 · QUOTES</div>
+  <div class="dwg-num">DWG NO. <span>LFB-006</span><br/>SECTION <span>§06</span></div>
+  <div class="reveal">
+    <div class="drawing-label">§06 · Principles</div>
+    <h2 class="sec-title">Words that<br/><em>built us.</em></h2>
+    <p class="sec-sub">The philosophy behind Laufbahn.</p>
+  </div>
+  <div class="quotes-toolbar reveal" style="transition-delay:0.1s;" id="quotes-toolbar">
     <button class="q-filter-btn active" data-cat="all">All</button>
     <button class="q-filter-btn" data-cat="learning">Learning</button>
     <button class="q-filter-btn" data-cat="growth">Growth</button>
@@ -1246,144 +392,133 @@ kbd {
     <button class="q-filter-btn" data-cat="life">Life</button>
     <button class="q-shuffle">↺ Shuffle</button>
   </div>
-
-  <div class="quotes-grid reveal" style="transition-delay: 0.2s;" id="quotes-grid"></div>
+  <div class="quotes-grid reveal" style="transition-delay:0.2s;" id="quotes-grid"></div>
 </section>
 
-<hr class="separator" />
+<hr class="separator"/>
 
-<!-- ── PROFILE ── -->
-<section id="profile">
-  <div class="margin-note" style="top: 60px;" id="mn-profile">§06 · PROFILE</div>
-  <div class="dwg-num">DWG NO. <span>LFB-006</span><br/>SECTION <span>§06</span></div>
-
+<section id="contact">
+  <div class="margin-note" style="top:60px;">§07 · CONTACT</div>
+  <div class="dwg-num">DWG NO. <span>LFB-007</span><br/>SECTION <span>§07</span></div>
   <div class="reveal">
-    <div class="drawing-label">§06 · LaufProfile</div>
-    <h2 class="sec-title">Your story,<br/><em>on record.</em></h2>
-    <p class="sec-sub">More than a resume. More than a portfolio. LaufProfile is your living professional identity — visible to recruiters, mentors, and collaborators worldwide.</p>
+    <div class="drawing-label">§07 · Contact</div>
+    <h2 class="sec-title">Get in<br/><em>touch.</em></h2>
+    <p class="sec-sub">A question, a school partnership inquiry, or just hello?</p>
   </div>
-
-  <div class="profile-layout">
-    <div class="reveal" style="transition-delay: 0.1s;">
-      <p class="sec-sub" style="margin-bottom: 28px;">
-        We've tracked your journey since the beginning — every course, every skill, every milestone. LaufProfile turns that into a dynamic identity that tells your story better than any CV ever could.
-      </p>
-      <div style="margin-bottom: 16px; font-family: var(--mono); font-size: 0.7rem; color: var(--ink-dim); line-height: 2;">
-        <div>✓ &nbsp;Skill tracking across all 4 stages</div>
-        <div>✓ &nbsp;Verified course completions</div>
-        <div>✓ &nbsp;Recruiter-visible public profile</div>
-        <div>✓ &nbsp;Endorsements from mentors & educators</div>
-        <div>✓ &nbsp;Job application integration</div>
+  <div class="contact-grid reveal" style="transition-delay:0.1s;">
+    <form class="contact-form" id="contact-form" onsubmit="submitForm(event)">
+      <div class="form-field"><label class="form-label">Name</label><input class="form-input" type="text" name="name" placeholder="Your name" required/></div>
+      <div class="form-field"><label class="form-label">Email</label><input class="form-input" type="email" name="email" placeholder="you@example.com" required/></div>
+      <div class="form-field"><label class="form-label">Stage</label>
+        <select class="form-input" name="stage">
+          <option>Grade 3–8 (Child)</option>
+          <option>Class 9–12 (Student)</option>
+          <option>University</option>
+          <option>Working Professional</option>
+          <option>School / Institution</option>
+        </select>
       </div>
-      <button class="btn-primary" style="background: var(--accent2); color: white; border: none; border-radius: 2px; padding: 12px 24px; font-size: 0.72rem; letter-spacing: 1px; display: inline-block; cursor: pointer; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
-        Create Your Profile →
-      </button>
-    </div>
-
-    <div class="profile-mock reveal" style="transition-delay: 0.2s;" id="profile-mock">
-      <div class="profile-header">
-        <div class="profile-avatar">AK</div>
-        <div>
-          <div class="profile-name">Aryan Kapoor</div>
-          <div class="profile-role">Product Designer · Mumbai, India</div>
-        </div>
+      <div class="form-field"><label class="form-label">Message</label><textarea class="form-input" name="message" placeholder="What's on your mind?" required></textarea></div>
+      <div>
+        <button class="btn-primary" type="submit" id="form-btn">Send Message</button>
+        <span id="form-status" style="font-family:var(--mono);font-size:0.7rem;color:var(--ink-dim);margin-left:12px;"></span>
       </div>
-      <div class="profile-body">
-        <div class="profile-row">
-          <span class="profile-row-k">Current Stage</span>
-          <span class="profile-row-v">Working Professional</span>
-        </div>
-        <div class="profile-row">
-          <span class="profile-row-k">Education</span>
-          <span class="profile-row-v">NIT Bombay, 2023</span>
-        </div>
-        <div class="profile-row">
-          <span class="profile-row-k">Courses Completed</span>
-          <span class="profile-row-v">24 Courses</span>
-        </div>
-        <div class="profile-row">
-          <span class="profile-row-k">Laufbahn Since</span>
-          <span class="profile-row-v">Age 9 · Class 4</span>
-        </div>
-      </div>
-      <div class="skill-section">
-        <div style="font-family: var(--mono); font-size: 0.6rem; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-dim); margin-bottom: 12px;">Skill Snapshot</div>
-        <div class="skill-label-row"><span>UX Research</span><span id="sk1-val">0%</span></div>
-        <div class="skill-track"><div class="skill-fill" id="sk1" data-target="92"></div></div>
-        <div class="skill-label-row"><span>Figma & Prototyping</span><span id="sk2-val">0%</span></div>
-        <div class="skill-track"><div class="skill-fill" id="sk2" data-target="88"></div></div>
-        <div class="skill-label-row"><span>Communication</span><span id="sk3-val">0%</span></div>
-        <div class="skill-track"><div class="skill-fill" id="sk3" data-target="85"></div></div>
-      </div>
+    </form>
+    <div class="contact-info">
+      <div class="contact-info-item"><strong>GENERAL</strong>hello@laufbahn.in</div>
+      <div class="contact-info-item"><strong>SCHOOLS & PARTNERSHIPS</strong>schools@laufbahn.in</div>
+      <div class="contact-info-item"><strong>CAREERS</strong>We're hiring educators, designers, and engineers.<br/>careers@laufbahn.in</div>
+      <div class="contact-info-item"><strong>SHORTCUTS</strong><kbd>Q</kbd> stage quiz &nbsp;·&nbsp; <kbd>F</kbd> easter egg &nbsp;·&nbsp; <kbd>Esc</kbd> close</div>
     </div>
   </div>
 </section>
 
-<!-- ── CTA ── -->
 <section id="cta" class="full-w">
-  <div class="drawing-label centered">§07 · Begin</div>
-  <h2 class="sec-title centered" style="max-width: 600px; margin: 0 auto 12px;">Ready to start<br/>the <em>blueprint?</em></h2>
-  <p class="sec-sub centered" style="margin: 0 auto 32px; text-align: center;">Whether you're enrolling a 5-year-old or levelling up your own career — Laufbahn has a place for you.</p>
+  <div class="drawing-label">§08 · Begin</div>
+  <h2 class="sec-title" style="max-width:600px;margin:0 auto 12px;color:white;">Ready to start<br/>the <em style="color:var(--gold)">blueprint?</em></h2>
+  <p class="sec-sub">Whether you're in Grade 3 or a working professional — Laufbahn has a stage for you.</p>
   <div class="cta-btns">
-    <button class="btn-primary">Start for Free</button>
-    <button class="btn-outline">View All Courses</button>
+    <button class="btn-primary" onclick="openQuiz()">Find My Stage</button>
+    <a href="#pricing" class="btn-outline">View Pricing</a>
   </div>
 </section>
 
-<!-- ── FOOTER ── -->
 <footer>
-  <div class="footer-logo">Lauf<em>bahn</em> &nbsp;·&nbsp; Track for a Life</div>
+  <div class="footer-logo">Lauf<em>bahn</em> · Track for a Life</div>
   <div class="footer-links">
-    <a href="#">About</a>
-    <a href="#">Courses</a>
-    <a href="#">For Schools</a>
-    <a href="#">Careers</a>
-    <a href="#">Contact</a>
+    <a href="grade38.html">Grade 3–8</a>
+    <a href="highschool.html">Class 9–12</a>
+    <a href="university.html">University</a>
+    <a href="professional.html">Professional</a>
+    <a href="#contact">Contact</a>
   </div>
-  <div style="font-size: 0.6rem; letter-spacing: 0.5px;">© 2026 LAUFBAHN · LFB-001-A · <span id="footer-date"></span></div>
+  <div style="font-size:0.6rem;letter-spacing:0.5px;">© 2026 LAUFBAHN · LFB-001-A · <span class="auto-date"></span></div>
 </footer>
 
-<!-- Back to top -->
 <button id="back-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑ top</button>
 
-<!-- Easter egg modal -->
+<div id="quiz-modal">
+  <div class="quiz-box">
+    <button class="quiz-close" onclick="closeQuiz()">✕</button>
+    <div class="quiz-step active" id="quiz-step-1">
+      <div class="quiz-progress">QUESTION 1 / 3</div>
+      <div class="quiz-q">What best describes where you are right now?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="quizNext(1,'school')">I'm in school (Grade 3 to 8)</button>
+        <button class="quiz-opt" onclick="quizNext(1,'highschool')">I'm in high school (Class 9 to 12)</button>
+        <button class="quiz-opt" onclick="quizNext(1,'uni')">I'm at university or about to be</button>
+        <button class="quiz-opt" onclick="quizNext(1,'pro')">I'm working or about to start</button>
+      </div>
+    </div>
+    <div class="quiz-step" id="quiz-step-2">
+      <div class="quiz-progress">QUESTION 2 / 3</div>
+      <div class="quiz-q">What's your biggest challenge right now?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="quizNext(2,'a')">I don't know what I'm interested in</button>
+        <button class="quiz-opt" onclick="quizNext(2,'b')">I know what I want but don't know how to get there</button>
+        <button class="quiz-opt" onclick="quizNext(2,'c')">I need to stand out for college or jobs</button>
+        <button class="quiz-opt" onclick="quizNext(2,'d')">I want to grow in my current career</button>
+      </div>
+    </div>
+    <div class="quiz-step" id="quiz-step-3">
+      <div class="quiz-progress">QUESTION 3 / 3</div>
+      <div class="quiz-q">What would help you most?</div>
+      <div class="quiz-options">
+        <button class="quiz-opt" onclick="quizResult()">Courses and structured learning</button>
+        <button class="quiz-opt" onclick="quizResult()">CV, resume, or application help</button>
+        <button class="quiz-opt" onclick="quizResult()">Job or college matching</button>
+        <button class="quiz-opt" onclick="quizResult()">A profile to showcase my skills</button>
+      </div>
+    </div>
+    <div class="quiz-step" id="quiz-result">
+      <div class="quiz-progress">YOUR STAGE</div>
+      <div class="quiz-q" id="quiz-result-title">—</div>
+      <div style="font-family:var(--sans);font-size:0.9rem;color:var(--ink-soft);line-height:1.7;margin-bottom:24px;" id="quiz-result-desc">—</div>
+      <a id="quiz-result-link" href="#" class="btn-primary" style="display:inline-block;">Go to my stage →</a>
+    </div>
+  </div>
+</div>
+
 <div id="egg-modal" onclick="closeEgg()">
   <div class="egg-box" onclick="event.stopPropagation()">
     <div class="egg-tape"></div>
     <div class="egg-label">SCRIBBLED IN THE MARGIN — DRAWING LFB-∞</div>
     <div class="egg-quote">"The blueprint was always there. We just gave it paper."</div>
-    <div class="egg-body">
-      Every great building started as a sketch on the back of a napkin.<br/>
-      Every great life starts with a single curious question.<br/><br/>
-      You found the easter egg — which means you're the kind of person who reads carefully. That's the best kind.
-    </div>
-    <div class="egg-dismiss" style="font-size: 0.62rem; color: var(--ink-dim); margin-top: 16px;">
-      press <kbd>Escape</kbd> or click outside to dismiss
-    </div>
+    <div class="egg-body">Every great building started as a sketch on a napkin.<br/>Every great life starts with a single curious question.<br/><br/>You found the easter egg — which means you read carefully.</div>
+    <div style="margin-top:16px;font-family:var(--mono);font-size:0.62rem;color:var(--ink-dim);">press <kbd>Escape</kbd> or click outside to close</div>
   </div>
 </div>
 
-<!-- Tweaks Panel -->
 <div id="tweaks" class="collapsed">
-  <div class="tweaks-header" onclick="toggleTweaks()">
-    <span>⚙ Tweaks</span>
-    <span id="tweaks-arrow">▲</span>
-  </div>
+  <div class="tweaks-header" onclick="toggleTweaks()"><span>⚙ Tweaks</span><span id="tweaks-arrow">▲</span></div>
   <div class="tweaks-body">
     <div class="tweak-row">
-      <div class="tweak-label">Theme</div>
-      <div class="tweak-seg">
-        <button class="active" onclick="setTheme('light')">Drafting</button>
-        <button onclick="setTheme('night')">Night</button>
-      </div>
-    </div>
-    <div class="tweak-row">
       <div class="tweak-label">Accent colour</div>
-      <div class="tweak-accents">
-        <div class="accent-dot selected" style="background:#c0392b;" onclick="setAccent('#c0392b','#f4a294',this)" title="Red"></div>
-        <div class="accent-dot" style="background:#1b2d6b;" onclick="setAccent('#1b2d6b','#7aaae8',this)" title="Navy"></div>
-        <div class="accent-dot" style="background:#2d6a4f;" onclick="setAccent('#2d6a4f','#9fd9b0',this)" title="Forest"></div>
-        <div class="accent-dot" style="background:#7a4988;" onclick="setAccent('#7a4988','#d4b3d8',this)" title="Plum"></div>
+      <div class="accent-dots">
+        <div class="accent-dot selected" style="background:#c0392b;" onclick="setAccent('#c0392b','#f4a294',this)"></div>
+        <div class="accent-dot" style="background:#1b2d6b;" onclick="setAccent('#1b2d6b','#7aaae8',this)"></div>
+        <div class="accent-dot" style="background:#2d6a4f;" onclick="setAccent('#2d6a4f','#9fd9b0',this)"></div>
+        <div class="accent-dot" style="background:#7a4988;" onclick="setAccent('#7a4988','#d4b3d8',this)"></div>
       </div>
     </div>
     <div class="tweak-row">
@@ -1396,278 +531,124 @@ kbd {
   </div>
 </div>
 
+<script src="shared.js"></script>
 <script>
-// ── DATA ──────────────────────────────────────────────────────────────
-const QUOTES = [
-  { text: "The mind is not a vessel to be filled, but a fire to be kindled.", attrib: "Plutarch", cat: "learning" },
-  { text: "Tell me and I forget. Teach me and I remember. Involve me and I learn.", attrib: "Benjamin Franklin", cat: "learning" },
-  { text: "Education is not the filling of a pail, but the lighting of a fire.", attrib: "W.B. Yeats", cat: "learning" },
-  { text: "Curiosity has its own reason for existing.", attrib: "Albert Einstein", cat: "learning" },
-  { text: "The more that you read, the more things you will know.", attrib: "Dr. Seuss", cat: "learning" },
-  { text: "It is not knowledge, but the act of learning, that grants the greatest enjoyment.", attrib: "Carl Friedrich Gauss", cat: "learning" },
-  { text: "Compounding curiosity beats raw intelligence every time.", attrib: "Laufbahn · Founding Principle", cat: "growth" },
-  { text: "Growth is uncomfortable. So is staying the same. Choose your discomfort.", attrib: "Laufbahn", cat: "growth" },
-  { text: "We do not rise to the level of our goals, we fall to the level of our systems.", attrib: "James Clear", cat: "growth" },
-  { text: "What you do speaks so loudly I cannot hear what you say.", attrib: "Ralph Waldo Emerson", cat: "growth" },
-  { text: "An investment in knowledge pays the best interest.", attrib: "Benjamin Franklin", cat: "growth" },
-  { text: "The secret of getting ahead is getting started.", attrib: "Mark Twain", cat: "growth" },
-  { text: "Choose a job you love, and you will never have to work a day in your life.", attrib: "Confucius", cat: "work" },
-  { text: "Hard work beats talent when talent doesn't work hard.", attrib: "Tim Notke", cat: "work" },
-  { text: "Measuring progress by hours worked is like measuring a building by bricks used.", attrib: "Laufbahn", cat: "work" },
-  { text: "The best time to plant a tree was twenty years ago. The second best time is now.", attrib: "Chinese Proverb", cat: "life" },
-  { text: "You are the average of the five people you spend the most time with.", attrib: "Jim Rohn", cat: "life" },
-  { text: "Life is not a problem to be solved, but a reality to be experienced.", attrib: "Søren Kierkegaard", cat: "life" },
-  { text: "A child who reads will become an adult who thinks.", attrib: "Unknown", cat: "life" },
-  { text: "Every expert was once a beginner.", attrib: "Helen Hayes", cat: "learning" },
+const COURSES=[
+  {level:'Grade 3–5',title:'The World of Science',desc:'Experiments and curiosity-driven discovery.',stage:'science',stripe:'#c0392b'},
+  {level:'Grade 6–8',title:'Coding for Creators',desc:'Build games and animations with beginner programming.',stage:'tech',stripe:'#c0392b'},
+  {level:'Grade 6–8',title:'How the Body Works',desc:'Biology, health, and the science of being human.',stage:'science',stripe:'#c0392b'},
+  {level:'Class 9–12',title:'Career Pathfinding',desc:'Explore 40+ career fields with real-world insight.',stage:'life',stripe:'#e8a020'},
+  {level:'Class 9–12',title:'College Application Mastery',desc:'Essays, interviews, shortlists — global admissions demystified.',stage:'life',stripe:'#e8a020'},
+  {level:'Class 9–12',title:'Economics & Markets',desc:'How money, trade, and systems actually work.',stage:'business',stripe:'#e8a020'},
+  {level:'Class 9–12',title:'Advanced Mathematics',desc:'Calculus, probability, and the tools of modern science.',stage:'science',stripe:'#e8a020'},
+  {level:'University',title:'Professional Communication',desc:'Emails, decks, negotiations — the language of work.',stage:'life',stripe:'#1b2d6b'},
+  {level:'University',title:'First Job Playbook',desc:'Find it, land it, navigate it. The unwritten rules.',stage:'business',stripe:'#1b2d6b'},
+  {level:'University',title:'Design Thinking',desc:'Human-centred problem solving for any field.',stage:'arts',stripe:'#1b2d6b'},
+  {level:'Professional',title:'Leadership & Strategy',desc:'Skills that compound over a career.',stage:'business',stripe:'#2d3d6b'},
+  {level:'Professional',title:'Personal Branding',desc:'Build a presence that attracts opportunities.',stage:'life',stripe:'#2d3d6b'},
+  {level:'All Stages',title:'Public Speaking',desc:'Communicate with clarity and confidence in any room.',stage:'arts',stripe:'#7a4988'},
+  {level:'All Stages',title:'Critical Thinking',desc:'Question assumptions, reason well, decide better.',stage:'science',stripe:'#7a4988'},
 ];
-
-// ── BINDER HOLES ──────────────────────────────────────────────────────
-function buildBinder() {
-  const h = Math.max(document.documentElement.scrollHeight, window.innerHeight);
-  document.querySelectorAll('.binder-hole').forEach(e => e.remove());
-  for (let y = 80; y < h; y += 180) {
-    const hole = document.createElement('div');
-    hole.className = 'binder-hole';
-    hole.style.top = y + 'px';
-    document.body.appendChild(hole);
-  }
+let activeCourseFilter='all';
+function renderCourses(){
+  const grid=document.getElementById('courses-grid');
+  if(!grid)return;
+  const f=activeCourseFilter==='all'?COURSES:COURSES.filter(c=>c.stage===activeCourseFilter);
+  grid.innerHTML=f.map(c=>`<div class="course-card"><div class="course-stripe" style="background:${c.stripe}"></div><div class="course-level">${c.level}</div><div class="course-title">${c.title}</div><div class="course-desc">${c.desc}</div></div>`).join('')+`<div class="course-card" style="background:var(--accent2);border-color:var(--accent2);display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:140px;"><div style="font-family:var(--serif);font-size:2rem;color:rgba(255,255,255,0.5);margin-bottom:6px;">+486</div><div style="font-family:var(--mono);font-size:0.62rem;color:rgba(255,255,255,0.4);letter-spacing:1px;">MORE COURSES</div></div>`;
 }
+document.getElementById('courses-toolbar').addEventListener('click',e=>{
+  if(!e.target.classList.contains('c-filter-btn'))return;
+  document.querySelectorAll('.c-filter-btn').forEach(b=>b.classList.remove('active'));
+  e.target.classList.add('active');
+  activeCourseFilter=e.target.dataset.filter;
+  renderCourses();
+});
+renderCourses();
 
-// ── DATES ──────────────────────────────────────────────────────────────
-const today = new Date();
-const fmtDate = (d) => d.toLocaleDateString('en-GB', { day:'2-digit', month:'short', year:'numeric' }).toUpperCase();
-document.getElementById('hero-date').textContent = fmtDate(today);
-document.getElementById('footer-date').textContent = fmtDate(today);
-
-// ── PROGRESS BAR ──────────────────────────────────────────────────────
-const progBar = document.getElementById('progress-bar');
-window.addEventListener('scroll', () => {
-  const h = document.documentElement.scrollHeight - window.innerHeight;
-  progBar.style.width = (window.scrollY / h * 100) + '%';
-}, { passive: true });
-
-// ── NAV SCROLL ────────────────────────────────────────────────────────
-const nav = document.getElementById('main-nav');
-window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 40);
-}, { passive: true });
-
-// ── BACK TO TOP ───────────────────────────────────────────────────────
-const backTop = document.getElementById('back-top');
-window.addEventListener('scroll', () => {
-  backTop.classList.toggle('visible', window.scrollY > 600);
-}, { passive: true });
-
-// ── REVEAL ON SCROLL ──────────────────────────────────────────────────
-const io = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('seen'); io.unobserve(e.target); }
-  });
-}, { threshold: 0.1 });
-document.querySelectorAll('.reveal').forEach(el => io.observe(el));
-
-// hero title underline
-const ioTitle = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { document.getElementById('hero-bp').classList.add('seen'); }
-  });
-}, { threshold: 0.5 });
-const heroTitle = document.getElementById('hero-title');
-if (heroTitle) ioTitle.observe(heroTitle);
-
-// ── MARGIN NOTES ──────────────────────────────────────────────────────
-const ioMargin = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { e.target.classList.add('visible'); }
-  });
-}, { threshold: 0.3 });
-document.querySelectorAll('.margin-note').forEach(el => ioMargin.observe(el));
-
-// ── SKILL BARS ────────────────────────────────────────────────────────
-function animateSkills() {
-  ['sk1','sk2','sk3'].forEach(id => {
-    const fill = document.getElementById(id);
-    const val = document.getElementById(id + '-val');
-    if (!fill) return;
-    const target = parseInt(fill.dataset.target);
-    fill.style.width = target + '%';
-    // count up
-    let cur = 0;
-    const interval = setInterval(() => {
-      cur = Math.min(cur + 2, target);
-      if (val) val.textContent = cur + '%';
-      if (cur >= target) clearInterval(interval);
-    }, 20);
-  });
+const QUOTES=[
+  {text:'The mind is not a vessel to be filled, but a fire to be kindled.',attrib:'Plutarch',cat:'learning'},
+  {text:'Tell me and I forget. Involve me and I learn.',attrib:'Benjamin Franklin',cat:'learning'},
+  {text:'Education is not the filling of a pail, but the lighting of a fire.',attrib:'W.B. Yeats',cat:'learning'},
+  {text:'Curiosity has its own reason for existing.',attrib:'Albert Einstein',cat:'learning'},
+  {text:'It is not knowledge, but the act of learning, that grants the greatest enjoyment.',attrib:'Carl Friedrich Gauss',cat:'learning'},
+  {text:'Every expert was once a beginner.',attrib:'Helen Hayes',cat:'learning'},
+  {text:'Compounding curiosity beats raw intelligence every time.',attrib:'Laufbahn · Founding Principle',cat:'growth'},
+  {text:'We do not rise to the level of our goals, we fall to the level of our systems.',attrib:'James Clear',cat:'growth'},
+  {text:'An investment in knowledge pays the best interest.',attrib:'Benjamin Franklin',cat:'growth'},
+  {text:'What you do speaks so loudly I cannot hear what you say.',attrib:'Ralph Waldo Emerson',cat:'growth'},
+  {text:'Choose a job you love, and you will never have to work a day in your life.',attrib:'Confucius',cat:'work'},
+  {text:'Hard work beats talent when talent doesn\'t work hard.',attrib:'Tim Notke',cat:'work'},
+  {text:'The best time to plant a tree was twenty years ago. The second best time is now.',attrib:'Chinese Proverb',cat:'life'},
+  {text:'A child who reads will become an adult who thinks.',attrib:'Unknown',cat:'life'},
+  {text:'You are the average of the five people you spend the most time with.',attrib:'Jim Rohn',cat:'life'},
+];
+let quotesOrder=[...QUOTES],activeQuoteCat='all';
+function renderQuotes(){
+  const grid=document.getElementById('quotes-grid');
+  if(!grid)return;
+  const f=activeQuoteCat==='all'?quotesOrder:quotesOrder.filter(q=>q.cat===activeQuoteCat);
+  grid.innerHTML=f.map(q=>`<div class="q-card"><div class="q-open-quote">"</div><div class="q-text">${q.text}</div><div class="q-attrib">— ${q.attrib}</div><button class="q-copy-btn" onclick="navigator.clipboard.writeText(this.dataset.t).then(()=>{this.textContent='✓';setTimeout(()=>this.textContent='copy',1600)})" data-t='"${q.text}" — ${q.attrib}'>copy</button></div>`).join('');
 }
-const ioProfile = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) { animateSkills(); ioProfile.unobserve(e.target); }
-  });
-}, { threshold: 0.4 });
-const profileMock = document.getElementById('profile-mock');
-if (profileMock) ioProfile.observe(profileMock);
-
-// ── QUOTES ───────────────────────────────────────────────────────────
-let activeCat = 'all';
-let quotesOrder = [...QUOTES];
-
-function renderQuotes() {
-  const grid = document.getElementById('quotes-grid');
-  if (!grid) return;
-  const filtered = activeCat === 'all' ? quotesOrder : quotesOrder.filter(q => q.cat === activeCat);
-  grid.innerHTML = '';
-  filtered.forEach((q, i) => {
-    const card = document.createElement('div');
-    card.className = 'q-card';
-    card.innerHTML = `
-      <div class="q-open-quote">"</div>
-      <div class="q-text">${q.text}</div>
-      <div class="q-attrib">— ${q.attrib}</div>
-      <button class="q-copy-btn" onclick="copyQuote(event,'${q.text.replace(/'/g,"\\'")}','${q.attrib.replace(/'/g,"\\'")}')">copy</button>
-    `;
-    grid.appendChild(card);
-  });
-}
-
-function copyQuote(e, text, attrib) {
-  e.stopPropagation();
-  navigator.clipboard.writeText(`"${text}" — ${attrib}`).then(() => {
-    e.target.textContent = '✓ copied';
-    setTimeout(() => e.target.textContent = 'copy', 1800);
-  });
-}
-window.copyQuote = copyQuote;
-
-// Filter buttons
-document.getElementById('quotes-toolbar').addEventListener('click', (e) => {
-  if (e.target.classList.contains('q-filter-btn')) {
-    document.querySelectorAll('.q-filter-btn').forEach(b => b.classList.remove('active'));
+document.getElementById('quotes-toolbar').addEventListener('click',e=>{
+  if(e.target.classList.contains('q-filter-btn')){
+    document.querySelectorAll('.q-filter-btn').forEach(b=>b.classList.remove('active'));
     e.target.classList.add('active');
-    activeCat = e.target.dataset.cat;
+    activeQuoteCat=e.target.dataset.cat;
     renderQuotes();
   }
-  if (e.target.classList.contains('q-shuffle')) {
-    // Fisher-Yates shuffle
-    const arr = [...quotesOrder];
-    for (let i = arr.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [arr[i], arr[j]] = [arr[j], arr[i]];
-    }
-    quotesOrder = arr;
+  if(e.target.classList.contains('q-shuffle')){
+    for(let i=quotesOrder.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[quotesOrder[i],quotesOrder[j]]=[quotesOrder[j],quotesOrder[i]];}
     renderQuotes();
   }
 });
-
 renderQuotes();
 
-// ── STAGE FILTER ──────────────────────────────────────────────────────
-document.getElementById('stage-nav').addEventListener('click', (e) => {
-  if (!e.target.classList.contains('stage-btn')) return;
-  document.querySelectorAll('.stage-btn').forEach(b => b.classList.remove('active'));
-  e.target.classList.add('active');
-  const stage = e.target.dataset.stage;
-  document.querySelectorAll('.journey-item').forEach(item => {
-    item.classList.toggle('hidden', stage !== 'all' && item.dataset.stage !== stage);
-  });
-});
-
-// ── THEME TOGGLE ──────────────────────────────────────────────────────
-let isNight = false;
-function setTheme(mode) {
-  isNight = mode === 'night';
-  document.body.classList.toggle('theme-night', isNight);
-  document.getElementById('theme-toggle').textContent = isNight ? '☀ day' : '◑ night';
-  document.getElementById('identity-card-bg') && (document.getElementById('identity-card-bg').style.background = 'var(--bg)');
-  // update identity card pseudo
-  document.querySelectorAll('.identity-card').forEach(c => c.style.setProperty('--bg-local', 'var(--bg)'));
-  // sync tweaks
-  document.querySelectorAll('#tweaks .tweak-seg button').forEach((btn, i) => {
-    if (btn.closest('.tweak-seg') === document.querySelector('#tweaks .tweak-seg')) {
-      btn.classList.toggle('active', (i === 0 && !isNight) || (i === 1 && isNight));
-    }
-  });
-  buildBinder();
+let annualPricing=false;
+const prices={scholar:[499,399],grad:[799,639],pro:[1199,959]};
+function togglePricing(){
+  annualPricing=!annualPricing;
+  document.getElementById('price-toggle').classList.toggle('on',annualPricing);
+  const s=annualPricing?'/mo (annual)':'/mo';
+  document.getElementById('price-scholar').innerHTML=`₹${prices.scholar[annualPricing?1:0]}<span style="font-size:1rem;font-family:var(--mono)">${s}</span>`;
+  document.getElementById('price-grad').innerHTML=`₹${prices.grad[annualPricing?1:0]}<span style="font-size:1rem;font-family:var(--mono)">${s}</span>`;
+  document.getElementById('price-pro').innerHTML=`₹${prices.pro[annualPricing?1:0]}<span style="font-size:1rem;font-family:var(--mono)">${s}</span>`;
 }
+window.togglePricing=togglePricing;
 
-document.getElementById('theme-toggle').addEventListener('click', () => {
-  setTheme(isNight ? 'light' : 'night');
-});
-
-// ── TWEAKS PANEL ──────────────────────────────────────────────────────
-let tweaksOpen = false;
-function toggleTweaks() {
-  tweaksOpen = !tweaksOpen;
-  document.getElementById('tweaks').classList.toggle('collapsed', !tweaksOpen);
-  document.getElementById('tweaks-arrow').textContent = tweaksOpen ? '▼' : '▲';
+let quizStage='';
+const quizResults={
+  school:{title:'Grade 3–8 · Explorer Stage',desc:'You\'re at the most important stage — discovering what you love. Laufbahn\'s hands-on courses and Interest Discovery Engine will guide you.',link:'grade38.html'},
+  highschool:{title:'Class 9–12 · Specialist Stage',desc:'Time to focus. Laufbahn will help you train for your chosen field, build your CV, and match you to the right colleges worldwide.',link:'highschool.html'},
+  uni:{title:'University · Transition Stage',desc:'The gap between campus and career is real. Laufbahn bridges it — resume building, workplace etiquette, and your first job.',link:'university.html'},
+  pro:{title:'Professional · Peak Stage',desc:'You\'re in the working world. Laufbahn\'s job matching and LaufProfile will help you find the right opportunities and grow fast.',link:'professional.html'},
+};
+function quizNext(step,val){
+  if(step===1)quizStage=val;
+  document.querySelectorAll('.quiz-step').forEach(s=>s.classList.remove('active'));
+  const next=step<3?document.getElementById(`quiz-step-${step+1}`):null;
+  if(next)next.classList.add('active');
 }
-window.toggleTweaks = toggleTweaks;
-window.setTheme = setTheme;
-
-function setAccent(light, dark, el) {
-  document.querySelectorAll('.accent-dot').forEach(d => d.classList.remove('selected'));
-  el.classList.add('selected');
-  const color = isNight ? dark : light;
-  document.documentElement.style.setProperty('--accent', color);
+function quizResult(){
+  const res=quizResults[quizStage]||quizResults.school;
+  document.getElementById('quiz-result-title').textContent=res.title;
+  document.getElementById('quiz-result-desc').textContent=res.desc;
+  document.getElementById('quiz-result-link').href=res.link;
+  document.querySelectorAll('.quiz-step').forEach(s=>s.classList.remove('active'));
+  document.getElementById('quiz-result').classList.add('active');
 }
-window.setAccent = setAccent;
+window.quizNext=quizNext;
+window.quizResult=quizResult;
 
-function setDensity(mode, btn) {
-  document.querySelectorAll('#density-seg button').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.querySelectorAll('section').forEach(s => {
-    s.style.paddingTop = mode === 'compact' ? '40px' : '72px';
-    s.style.paddingBottom = mode === 'compact' ? '40px' : '72px';
-  });
+const SHEET_URL='YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+async function submitForm(e){
+  e.preventDefault();
+  const btn=document.getElementById('form-btn'),status=document.getElementById('form-status');
+  btn.textContent='Sending...';btn.disabled=true;
+  try{await fetch(SHEET_URL,{method:'POST',body:new FormData(e.target),mode:'no-cors'});}catch(err){}
+  status.textContent='✓ Sent! We\'ll be in touch.';
+  e.target.reset();btn.textContent='Send Message';btn.disabled=false;
 }
-window.setDensity = setDensity;
-
-// ── EASTER EGG ───────────────────────────────────────────────────────
-const eggModal = document.getElementById('egg-modal');
-function openEgg() { eggModal.classList.add('open'); }
-function closeEgg() { eggModal.classList.remove('open'); }
-window.closeEgg = closeEgg;
-
-// ── KEYBOARD SHORTCUTS ────────────────────────────────────────────────
-document.addEventListener('keydown', (e) => {
-  if (e.target.matches('input,textarea,[contenteditable]')) return;
-  if (e.key === 't' || e.key === 'T') setTheme(isNight ? 'light' : 'night');
-  if (e.key === 'f' || e.key === 'F') openEgg();
-  if (e.key === 'Escape') closeEgg();
-  // J/K to cycle stage filters
-  if (e.key === 'j' || e.key === 'J') {
-    const btns = [...document.querySelectorAll('.stage-btn')];
-    const active = btns.findIndex(b => b.classList.contains('active'));
-    const next = btns[(active + 1) % btns.length];
-    next.click();
-    document.getElementById('journey-section')?.scrollIntoView({ behavior: 'smooth' });
-  }
-  if (e.key === 'k' || e.key === 'K') {
-    const btns = [...document.querySelectorAll('.stage-btn')];
-    const active = btns.findIndex(b => b.classList.contains('active'));
-    const prev = btns[(active - 1 + btns.length) % btns.length];
-    prev.click();
-    document.getElementById('journey-section')?.scrollIntoView({ behavior: 'smooth' });
-  }
-});
-
-// ── INIT ──────────────────────────────────────────────────────────────
-buildBinder();
-window.addEventListener('resize', buildBinder);
-const roBody = new ResizeObserver(buildBinder);
-roBody.observe(document.body);
-
-// update kb hints
-document.getElementById('kb-hints').innerHTML =
-  '<kbd>T</kbd> theme &nbsp;·&nbsp; <kbd>J/K</kbd> stages &nbsp;·&nbsp; <kbd>F</kbd> ?';
-
-// Trigger hero animations on load
-setTimeout(() => {
-  document.querySelectorAll('.reveal').forEach(el => {
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight * 0.9) el.classList.add('seen');
-  });
-}, 50);
+window.submitForm=submitForm;
 </script>
 </body>
 </html>
